@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To Do: Log In</title>
+    <title>To Do: Sign up</title>
     <link rel="stylesheet" href="../static/css/base.css">
     <link rel="stylesheet" href="../static/css/auth.css">
+    <link rel="stylesheet" href="../static/css/signup.css">
     <link href="http://fonts.cdnfonts.com/css/montserrat" rel="stylesheet">
 </head>
 <body>
@@ -33,14 +34,26 @@
                 <input id="usernameInput" class="card__input" type="text">
             </div>
             <div class="card-form__item">
-                <label class="card__label" for="passwordInput">Password:</label>
-                <input id="passwordInput" class="card__input" type="password">
+                <label class="card__label" for="emailInput">Email:</label>
+                <input id="emailInput" class="card__input" type="text">
             </div>
-            <input class="card__submit" type="submit" value="Log in"></section>
+            <div class="card-form__item">
+                <label class="card__label"
+                       for="password1Input">Password:</label>
+                <input id="password1Input" class="card__input" type="password">
+            </div>
+            <div class="card-form__item">
+                <label class="card__label" for="password2Input">Confirm
+                    password:</label>
+                <input id="password2Input" class="card__input" type="password">
+            </div>
+            <input class="card__submit" type="submit" value="Sign up">
+        </section>
         <div class="card-auth">
-            <p class="card-auth__text">Don't have an account?</p>
-            <a class="card-auth__link" href="../templates/signup.html">Sign up</a>
+            <p class="card-auth__text">Already have an account?</p>
+            <a class="card-auth__link" href="../templates/login.html">Log in</a>
         </div>
+    </section>
     </section>
 </main>
 </body>

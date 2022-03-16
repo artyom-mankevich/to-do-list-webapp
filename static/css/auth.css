@@ -21,6 +21,12 @@
     gap: 10px;
 }
 
+@media screen and (max-width: 800px) {
+    .card-logo {
+        display: none;
+    }
+}
+
 .card-form {
     display: flex;
     flex-direction: column;
@@ -45,6 +51,8 @@
     height: 2rem;
     border-radius: .5rem;
     border: 2px solid #dfdfdf;
+    font-size: 1.5rem;
+    padding-inline: 10px;
 }
 
 .card__submit {
@@ -63,22 +71,22 @@
     background-color: #005ce4;
 }
 
-.card-signup {
+.card-auth {
     display: flex;
     gap: 10px;
     margin-top: 2rem;
     margin-bottom: 1rem;
 }
 
-.signup__text {
+.card-auth__text {
     margin: 0;
 }
 
-.signup__link {
+.card-auth__link {
     text-decoration: none;
     color: #0041A3;
 }
 
-.signup__link:hover {
+.card-auth__link:hover {
     color: #005ce4;
 }
