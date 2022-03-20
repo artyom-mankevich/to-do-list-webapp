@@ -34,6 +34,9 @@ html, body {
 .header-logo__icon {
     height: 36px;
     width: 36px;
+}
+
+.header-logo__icon_blue {
     filter: invert(14%) sepia(73%) saturate(3789%) hue-rotate(211deg) brightness(95%) contrast(101%);
 }
 
@@ -53,6 +56,7 @@ html, body {
 .header-auth {
     display: flex;
     gap: 1.5rem;
+    align-items: center;
 }
 
 .header-auth__item {
@@ -60,6 +64,9 @@ html, body {
     color: black;
     font-weight: 600;
     font-size: large;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .header-auth__item:hover {
