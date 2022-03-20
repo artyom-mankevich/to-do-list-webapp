@@ -71,6 +71,26 @@
     background-color: #005ce4;
 }
 
+/*In real project won't be used*/
+.card__submit-link {
+    text-decoration: none;
+    width: 95%;
+    color: white;
+    background-color: var(--main-blue-color);
+    border: none;
+    border-radius: .5rem;
+    font-size: 1.3rem;
+    padding-block: 7px;
+    cursor: pointer;
+    transition: linear 200ms;
+    text-align: center;
+    font-weight: 600;
+}
+
+.card__submit-link:hover {
+    background-color: #005ce4;
+}
+
 .card-auth {
     display: flex;
     gap: 10px;
