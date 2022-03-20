@@ -19,7 +19,7 @@ html, body {
     padding-block: .65rem;
 }
 
-@media screen and (max-width: 800px){
+@media screen and (max-width: 800px) {
     .header {
         padding-inline: 2%;
     }
