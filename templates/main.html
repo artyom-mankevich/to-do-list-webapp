@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your notes</title>
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="../static/css/main.css">
+    <link href="http://fonts.cdnfonts.com/css/montserrat" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+    <button class="menu-button">
+        <img class="menu-button__icon"
+             src="../static/img/menu.png" alt="Menu button">
+    </button>
+    <div class="header-logo">
+        <img class="header-logo__icon header-logo__icon_blue"
+             src="../static/img/check.svg"
+             alt="Logo icon">
+        <a class="header-logo__title" href="../index.html">To Do</a>
+    </div>
+    <button class="header__notification-button">
+        <img class="header__notification-button-icon"
+             src="../static/img/bell.svg" alt="Notification bell">
+    </button>
+    <section class="header-auth">
+        <a class="header-auth__item" href="login.html">
+            <img class="header-logo__icon" src="../static/img/logout.svg"
+                 alt="Logout icon">
+            Log out
+        </a>
+    </section>
+</header>
+<section class="menu menu_hidden">
+    <section class="categories-menu categories-menu_hidden">
+        <h4 class="menu-title">Categories</h4>
+        <ul class="categories-list">
+            <li class="categories-list__item">Notes</li>
+            <li class="categories-list__item">Reminders</li>
+        </ul>
+    </section>
+    <section class="tags-menu tags-menu_hidden">
+        <h4 class="menu-title">Tags</h4>
+        <ul class="tags-list">
+            <li class="tags-list__item">work</li>
+            <li class="tags-list__item">home</li>
+            <li class="tags-list__item">cooking</li>
+        </ul>
+    </section>
+</section>
+<main class="main">
+    <section class="side-menu">
+        <section class="side-menu-categories">
+            <button class="side-menu-categories__item side-menu-categories__item_active">
+                <img class="side-menu-categories__icon side-menu-categories__icon_active"
+                     src="../static/img/pencil.svg" alt="Notes icon">
+                Notes
+            </button>
+            <button class="side-menu-categories__item">
+                <img class="side-menu-categories__icon"
+                     src="../static/img/bell.svg" alt="Reminders icon">
+                Reminders
+            </button>
+        </section>
+        <div class="side-menu-tags">
+            <h3 class="side-menu-tags__title">tags:</h3>
+            <section class="tags-buttons">
+                <button class="tags-buttons__item">
+                    <img class="tags-buttons__icon"
+                         src="../static/img/bookmark.png" alt="Tag icon">
+                    work
+                </button>
+                <button class="tags-buttons__item">
+                    <img class="tags-buttons__icon"
+                         src="../static/img/bookmark.png" alt="Tag icon">
+                    home
+                </button>
+                <button class="tags-buttons__item">
+                    <img class="tags-buttons__icon"
+                         src="../static/img/bookmark.png" alt="Tag icon">
+                    cooking
+                </button>
+            </section>
+        </div>
+        <button class="side-menu-categories__item side-menu-categories__item_bottom">
+            <img class="side-menu-categories__icon"
+                 src="../static/img/trash.svg" alt="Trash icon">
+            Trash
+        </button>
+    </section>
+    <section class="main-panel">
+        <button class="main-panel__add-button">
+            <img class="main-panel__add-button-icon"
+                 src="../static/img/plus.svg" alt="Plus icon">
+            Add new note
+        </button>
+        <section class="notes">
+            <article class="note">
+                <header class="note__header">
+                    <img class="note__pin-icon note__pin-icon_active"
+                         src="../static/img/pin.svg" alt="Pin icon">
+                    <h3 class="note__title">
+                        University
+                    </h3>
+                </header>
+                <p class="note__text">Do a mock-up for ITandDDP</p>
+            </article>
+            <article class="note">
+                <header class="note__header">
+                    <img class="note__pin-icon"
+                         src="../static/img/pin.svg" alt="Pin icon">
+                    <h3 class="note__title">
+                        Shopping list
+                    </h3>
+                </header>
+                <section class="note-list">
+                    <div class="note-list__item">
+                        <img class="note-list__icon"
+                             src="../static/img/square.png"
+                             alt="Unchecked item">
+                        <p class="note-list__text">eggs</p>
+                    </div>
+                    <div class="note-list__item">
+                        <img class="note-list__icon"
+                             src="../static/img/square.png"
+                             alt="Unchecked item">
+                        <p class="note-list__text">milk</p>
+                    </div>
+                    <div class="note-list__item">
+                        <img class="note-list__icon"
+                             src="../static/img/checked-square.png"
+                             alt="Unchecked item">
+                        <p class="note-list__text">bread</p>
+                    </div>
+                    <div class="note-list__item">
+                        <img class="note-list__icon"
+                             src="../static/img/square.png"
+                             alt="Unchecked item">
+                        <p class="note-list__text">cheese</p>
+                    </div>
+                    <div class="note-list__item">
+                        <img class="note-list__icon"
+                             src="../static/img/square.png"
+                             alt="Unchecked item">
+                        <p class="note-list__text">rice</p>
+                    </div>
+                    <div class="note-list__item">
+                        <img class="note-list__icon"
+                             src="../static/img/checked-square.png"
+                             alt="Unchecked item">
+                        <p class="note-list__text">pork</p>
+                    </div>
+                    <div class="note-list__item">
+                        <img class="note-list__icon"
+                             src="../static/img/square.png"
+                             alt="Unchecked item">
+                        <p class="note-list__text">toothpaste</p>
+                    </div>
+                    <img class="note-list__extension"
+                         src="../static/img/ellipsis.png"
+                         alt="Ellipsis">
+                </section>
+            </article>
+            <article class="note">
+                <header class="note__header">
+                    <img class="note__pin-icon"
+                         src="../static/img/pin.svg" alt="Pin icon">
+                    <h3 class="note__title">
+                        Home
+                    </h3>
+                </header>
+                <p class="note__text">
+                    Gotta buy a new dishwasher or call the repair service.
+                    Also fix the tap
+                </p>
+            </article>
+        </section>
+    </section>
+</main>
+<scripts>
+    <script type="text/javascript" src="../static/js/main.js"></script>
+</scripts>
+</body>
+</html>
