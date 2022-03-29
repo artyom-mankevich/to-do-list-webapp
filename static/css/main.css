@@ -76,22 +76,26 @@
 
 @media screen and (max-width: 800px) {
     .menu {
-        overflow: hidden;
         display: flex;
         flex-direction: column;
         width: 100%;
         justify-content: center;
         max-height: 250px;
+        min-height: fit-content;
     }
 }
 
 .menu_hidden {
-    overflow: hidden;
     max-height: 0;
     padding: 0;
     margin: 0;
     transition: all .5s ease;
     will-change: transform;
+}
+
+.menu-title {
+    font-size: 1.1rem;
+    margin: 0;
 }
 
 .categories-menu {
@@ -107,6 +111,7 @@
 .categories-list {
     list-style: none;
     margin: 0;
+    padding: 0;
 }
 
 @media screen and (max-width: 800px) {
@@ -133,6 +138,7 @@
 .tags-list {
     list-style: none;
     margin: 0;
+    padding: 0;
 }
 
 @media screen and (max-width: 800px) {
@@ -212,6 +218,12 @@
     width: 40px;
     height: 40px;
     transition: linear 100ms;
+}
+
+@media screen and (max-width: 1000px) {
+    .side-menu-categories__icon {
+        display: none;
+    }
 }
 
 .side-menu-categories__item:hover .side-menu-categories__icon {
@@ -294,6 +306,7 @@
 @media screen and (max-width: 800px) {
     .main-panel {
         width: 100%;
+        height: 100%;
     }
 }
 
@@ -422,14 +435,18 @@
     gap: 7px;
 }
 
+.note-list__checkbox {
+    margin: 0;
+    border: solid 2px black;
+    color: black;
+    border-radius: 0;
+    width: 15px;
+    height: 15px;
+}
+
 .note-list__text {
     margin: 0;
     font-size: 1.1rem;
-}
-
-.note-list__icon {
-    width: 15px;
-    height: 15px;
 }
 
 .note-list__extension {
