@@ -209,7 +209,7 @@
 }
 
 .side-menu-categories__item_bottom {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 20%;
 }
