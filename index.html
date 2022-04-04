@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do</title>
+    <link rel="stylesheet" href="static/css/base.css">
+    <link rel="stylesheet" href="static/css/index.css">
+    <link href="https://fonts.cdnfonts.com/css/montserrat" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+    <div class="header-logo">
+        <img class="header-logo__icon header-logo__icon_blue" src="static/img/check.svg"
+             alt="Logo icon">
+        <a class="header-logo__title" href="">To Do</a>
+    </div>
+    <section class="header-auth">
+        <a class="header-auth__item" href="templates/login.html">Log in</a>
+        <a class="header-auth__item" href="templates/signup.html">Sign Up</a>
+    </section>
+</header>
+<main class="main">
+    <img class="main__background"
+         src="static/img/notes-bg.jpeg" alt="Notepad background">
+    <div class="main-panel">
+        <h1 class="main-panel__title">Organize your notes here</h1>
+        <a class="main-panel__start-link" href="templates/signup.html">Get started</a>
+    </div>
+    <section class="main-notes">
+        <article class="note">
+            <section class="note-header">
+                <img class="note-header__icon"
+                     src="static/img/pencil.svg" alt="Pencil icon">
+                <h2 class="note-header__title">Create notes</h2>
+            </section>
+            <p class="note__text">Write down your thoughts in text or add
+                pictures to never lose them</p>
+        </article>
+        <article class="note">
+            <section class="note-header">
+                <img class="note-header__icon"
+                     src="static/img/to-do-list.png" alt="List icon">
+                <h2 class="note-header__title">Plan activities</h2>
+            </section>
+            <p class="note__text">Create lists to break up your tasks and mark
+                accomplished goals</p>
+        </article>
+        <article class="note">
+            <section class="note-header">
+                <img class="note-header__icon"
+                     src="static/img/bell.svg" alt="Bell icon">
+                <h2 class="note-header__title">Set reminders</h2>
+            </section>
+            <p class="note__text">Set reminders to never forget about important
+                events</p>
+        </article>
+    </section>
+</main>
+</body>
+</html>

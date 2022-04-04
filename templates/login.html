@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do: Log In</title>
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="../static/css/auth.css">
+    <link href="https://fonts.cdnfonts.com/css/montserrat" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+    <div class="header-logo">
+        <img class="header-logo__icon header-logo__icon_blue"
+             src="../static/img/check.svg"
+             alt="Logo icon">
+        <a class="header-logo__title" href="../index.html">To Do</a>
+    </div>
+    <section class="header-auth">
+        <a class="header-auth__item" href="../templates/login.html">Log in</a>
+        <a class="header-auth__item" href="../templates/signup.html">Sign Up</a>
+    </section>
+</header>
+<main class="main">
+    <section class="card">
+        <header class="card-logo">
+            <img class="header-logo__icon header-logo__icon_blue"
+                 src="../static/img/check.svg"
+                 alt="Logo icon">
+            <a class="header-logo__title" href="../index.html">To Do</a>
+        </header>
+        <section class="card-form">
+            <div class="card-form__item">
+                <label class="card__label" for="usernameInput">Username:</label>
+                <input id="usernameInput" class="card__input" type="text">
+            </div>
+            <div class="card-form__item">
+                <label class="card__label" for="passwordInput">Password:</label>
+                <input id="passwordInput" class="card__input" type="password">
+            </div>
+            <!--     in real project input will be used instead of a       -->
+            <!--<input class="card__submit" type="submit" value="Log in">-->
+            <a class="card__submit-link" href="main.html">Log in</a>
+        </section>
+        <div class="card-auth">
+            <p class="card-auth__text">Don't have an account?</p>
+            <a class="card-auth__link" href="../templates/signup.html">Sign up</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>
