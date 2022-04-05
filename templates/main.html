@@ -50,6 +50,52 @@
     </section>
 </section>
 <main class="main">
+    <section class="notifications notifications_hidden">
+        <section class="notification">
+            <img class="notification__icon" src="../static/img/calendar.svg"
+                 alt="Calendar icon">
+            <p class="notification__text">'Maths exam' happens tomorrow at
+                10:30</p>
+        </section>
+        <hr class="notifications__line">
+        <section class="notification">
+            <img class="notification__icon"
+                 src="../static/img/cross-calendar.svg"
+                 alt="Calendar icon">
+            <p class="notification__text">'John's birthday' happened at
+                20.02.2022 09:00</p>
+        </section>
+    </section>
+    <form class="note-form note-form_hidden">
+        <section class="note-form__header">
+            <input class="note-form__input note-form__title"
+                   type="text"
+                   placeholder="Type your title">
+            <input id="pin" class="note-form__pin-checkbox"
+                   type="checkbox">
+            <label class="note-form__pin-icon" for="pin">
+                <img src="../static/img/pin.svg"
+                     alt="Pin button">
+            </label>
+        </section>
+        <section class="note-form__body">
+            <textarea class="note-form__input note-form__body-input"
+                      placeholder="Your note ..."></textarea>
+        </section>
+        <section class="note-form__footer">
+            <button class="note-form__list-button">
+                <img class="note-form__list-icon"
+                     src="../static/img/checked-square.png"
+                     alt="List button">
+            </button>
+            <input class="note-form__input note-form__tag-input" type="text"
+                   placeholder="add tag">
+            <button class="note-form__picture-button">
+                <img class="note-form__picture-icon"
+                     src="../static/img/picture.svg" alt="Add picture">
+            </button>
+        </section>
+    </form>
     <section class="side-menu">
         <section class="side-menu-categories">
             <button class="side-menu-categories__item side-menu-categories__item_active">
@@ -97,23 +143,23 @@
         </button>
         <section class="notes">
             <article class="note">
-                <header class="note__header">
+                <section class="note__header">
                     <img class="note__pin-icon note__pin-icon_active"
                          src="../static/img/pin.svg" alt="Pin icon">
                     <h2 class="note__title">
                         University
                     </h2>
-                </header>
+                </section>
                 <p class="note__text">Do a mock-up for ITandDDP</p>
             </article>
             <article class="note">
-                <header class="note__header">
+                <section class="note__header">
                     <img class="note__pin-icon"
                          src="../static/img/pin.svg" alt="Pin icon">
                     <h2 class="note__title">
                         Shopping list
                     </h2>
-                </header>
+                </section>
                 <section class="note-list">
                     <div class="note-list__item">
                         <input class="note-list__checkbox" type="checkbox">
@@ -149,13 +195,13 @@
                 </section>
             </article>
             <article class="note">
-                <header class="note__header">
+                <section class="note__header">
                     <img class="note__pin-icon"
                          src="../static/img/pin.svg" alt="Pin icon">
                     <h2 class="note__title">
                         Home
                     </h2>
-                </header>
+                </section>
                 <p class="note__text">
                     Gotta buy a new dishwasher or call the repair service.
                     Also fix the tap
@@ -164,8 +210,9 @@
         </section>
     </section>
 </main>
-<scripts>
-    <script type="text/javascript" src="../static/js/main.js"></script>
-</scripts>
+<script type="module" src="../static/js/db/config.js"></script>
+<script type="module" src="../static/js/main/dbRequests.js"></script>
+<script type="module" src="../static/js/main/eventListeners.js"></script>
+<script type="module" src="../static/js/main/main.js"></script>
 </body>
 </html>
