@@ -11,12 +11,14 @@ import {
     push,
     query,
     ref,
-    update
+    update,
+    startAt,
+    onChildRemoved,
 } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
 import {List, Note} from "./entities.js";
 
-import {addNoteElement, changeNoteElement} from "../main/drawing.js";
+import {addNoteElement, changeNoteElement, removeNoteElement} from "../main/domManipulation.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDYxCOzTTHcxGcitpvzOKSNYp2W4aqatz0",
@@ -28,15 +30,20 @@ const firebaseConfig = {
     appId: "1:768237899720:web:0c6803c823785521147afd"
 };
 
+const initTime = Date.now();
+
 class MyDatabase {
     constructor() {
         const app = initializeApp(firebaseConfig);
         this.db = getDatabase(app);
-        onChildAdded(ref(this.db, 'notes/'), (snapshot) => {
+        onChildAdded(query(ref(this.db, 'notes/'), orderByChild('timestamp'), startAt(initTime)), (snapshot) => {
             addNoteElement(snapshot.key, snapshot.val());
         });
         onChildChanged(ref(this.db, 'notes/'), (snapshot) => {
             changeNoteElement(snapshot.key, snapshot.val());
+        });
+        onChildRemoved(ref(this.db, 'notes/'), (snapshot) => {
+            removeNoteElement(snapshot.key);
         });
     }
 
@@ -74,6 +81,19 @@ class MyDatabase {
         }
     }
 
+    updateNotePinned(key, pinned) {
+        update(ref(this.db, 'notes/' + key), {
+            pinned: pinned
+        });
+    }
+
+    updateNoteListItem(key, listItemValue, listItemKey) {
+        const path = 'notes/' + key + '/listItems/' + listItemKey;
+        update(ref(this.db, path), {
+            checked: listItemValue
+        });
+    }
+
     getNotes() {
         const notesRef = query(ref(this.db, 'notes/'), orderByChild('pinned'));
         return new Promise((resolve, reject) => {
@@ -87,6 +107,7 @@ class MyDatabase {
                         if (content.type === 'note') {
                             notes.push(
                                 new Note(
+                                    childSnapshot.key,
                                     content.title,
                                     content.timestamp,
                                     content.type,
@@ -98,6 +119,7 @@ class MyDatabase {
                         } else if (content.type === 'list') {
                             notes.push(
                                 new List(
+                                    childSnapshot.key,
                                     content.title,
                                     content.timestamp,
                                     content.type,
