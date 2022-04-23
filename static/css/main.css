@@ -512,9 +512,11 @@
 
 .notes {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     flex-wrap: wrap;
     gap: 2%;
+    padding-left: 10%;
+    padding-right: 10%;
 }
 
 @media screen and (max-width: 800px) {
@@ -534,6 +536,7 @@
     border: solid 2px black;
     padding-block: 8px;
     padding-inline: 15px;
+    margin-bottom: 5px;
     height: fit-content;
     max-width: 20%;
     min-width: 200px;
@@ -577,13 +580,25 @@
     height: 30px;
 }
 
+.note:hover .note__pin-icon {
+    display: initial;
+    filter: opacity(30%);
+}
+
 .note__pin-icon_active {
     display: initial;
     transition: linear 100ms;
 }
 
+.note:hover .note__pin-icon_active {
+    display: initial;
+    filter: opacity(100%);
+}
+
 .note__pin-icon_active:hover {
     filter: opacity(30%);
+    background-color: #dedede;
+    border-radius: 5px;
 }
 
 .note__text {
@@ -596,6 +611,8 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin: 0;
+    padding: 0;
 }
 
 .note-list__item {
