@@ -51,26 +51,13 @@
 </section>
 <main class="main">
     <section class="notifications notifications_hidden">
-        <section class="notification">
-            <img class="notification__icon" src="../static/img/calendar.svg"
-                 alt="Calendar icon">
-            <p class="notification__text">'Maths exam' happens tomorrow at
-                10:30</p>
-        </section>
-        <hr class="notifications__line">
-        <section class="notification">
-            <img class="notification__icon"
-                 src="../static/img/cross-calendar.svg"
-                 alt="Calendar icon">
-            <p class="notification__text">'John's birthday' happened at
-                20.02.2022 09:00</p>
-        </section>
     </section>
-    <form class="note-form note-form_hidden">
+    <section class="note-form note-form_hidden">
         <section class="note-form__header">
             <input class="note-form__input note-form__title"
                    type="text"
-                   placeholder="Type your title">
+                   placeholder="Type your title"
+                   maxlength="30">
             <input id="pin" class="note-form__pin-checkbox"
                    type="checkbox">
             <label class="note-form__pin-icon" for="pin">
@@ -79,8 +66,8 @@
             </label>
         </section>
         <section class="note-form__body">
-            <textarea class="note-form__input note-form__body-input"
-                      placeholder="Your note ..."></textarea>
+        </section>
+        <section class="form-images-container">
         </section>
         <section class="note-form__footer">
             <button class="note-form__list-button">
@@ -89,13 +76,14 @@
                      alt="List button">
             </button>
             <input class="note-form__input note-form__tag-input" type="text"
-                   placeholder="add tag">
+                   placeholder="add tag" maxlength="30">
             <button class="note-form__picture-button">
                 <img class="note-form__picture-icon"
                      src="../static/img/picture.svg" alt="Add picture">
             </button>
+            <input class="note-form__file-input" type="file" accept="image/*">
         </section>
-    </form>
+    </section>
     <section class="side-menu">
         <section class="side-menu-categories">
             <button class="side-menu-categories__item side-menu-categories__item_active">
@@ -112,28 +100,8 @@
         <div class="side-menu-tags">
             <h1 class="side-menu-tags__title">tags:</h1>
             <section class="tags-buttons">
-                <button class="tags-buttons__item">
-                    <img class="tags-buttons__icon"
-                         src="../static/img/bookmark.png" alt="Tag icon">
-                    work
-                </button>
-                <button class="tags-buttons__item">
-                    <img class="tags-buttons__icon"
-                         src="../static/img/bookmark.png" alt="Tag icon">
-                    home
-                </button>
-                <button class="tags-buttons__item">
-                    <img class="tags-buttons__icon"
-                         src="../static/img/bookmark.png" alt="Tag icon">
-                    cooking
-                </button>
             </section>
         </div>
-        <button class="side-menu-categories__item side-menu-categories__item_bottom">
-            <img class="side-menu-categories__icon"
-                 src="../static/img/trash.svg" alt="Trash icon">
-            Trash
-        </button>
     </section>
     <section class="main-panel">
         <button class="main-panel__add-button">
@@ -145,9 +113,10 @@
         </section>
     </section>
 </main>
+<script type="module" src="../static/js/db/entities.js"></script>
+<script type="module" src="../static/js/main/DOMToDb.js"></script>
 <script type="module" src="../static/js/main/domManipulation.js"></script>
 <script type="module" src="../static/js/db/db.js"></script>
-<script type="module" src="../static/js/main/dbRequests.js"></script>
 <script type="module" src="../static/js/main/eventListeners.js"></script>
 <script type="module" src="../static/js/main/main.js"></script>
 </body>

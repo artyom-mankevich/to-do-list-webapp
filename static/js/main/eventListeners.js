@@ -1,7 +1,34 @@
-import {addNoteToDb} from "./dbRequests.js";
+import {
+    drawFormImageElement,
+    cleanFormImages,
+    cleanNotifications,
+    clearForm,
+    createFormListItem,
+    deactivateTags,
+    drawNotes,
+    drawNotesByTag,
+    drawNotifications,
+    getNoteFormType,
+    getNoteType,
+    insertNoteFormBody,
+    removeAllNoteElements,
+    removeNoteFormBody,
+    toggleCategoriesButton,
+    toggleControllable,
+    toggleDarkBackground
+} from "./domManipulation.js";
 import {db} from "../db/db.js";
+import {
+    addNoteToDb,
+    addReminderToDb,
+    populateNoteForm,
+    populateReminderForm,
+    updateNote,
+    updateReminder
+} from "./DOMToDb.js";
 
-export var noteType = "note";
+let editing = false;
+let editedNoteId = 0;
 
 export function setEventListeners() {
     const menu = document.querySelector(".menu");
@@ -15,35 +42,45 @@ export function setEventListeners() {
     });
 
     addCategoriesListeners();
-    addTagsListeners();
     addNotificationsListeners();
     addNoteFormListeners();
-    // addNoteEditListeners();
-    addNotePinListeners();
-    addListCheckboxListeners();
+    addNoteFormListButtonListeners();
+    addFileInputListener();
 
     const pinCheckbox = document.querySelector(".note-form__pin-checkbox");
     pinCheckbox.checked = false;
 }
 
-export function addListCheckboxListeners(note = null) {
-    let checkboxes;
-    if (note === null) {
-        checkboxes = document.querySelectorAll(".note-list__checkbox");
-    } else {
-        checkboxes = note.querySelectorAll(".note-list__checkbox");
-    }
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener("change", function (event) {
-            const noteId = checkbox.parentElement.parentElement.parentElement.id;
-            db.updateNoteListItem(noteId,
-                checkbox.checked,
-                checkbox.parentElement.id);
-        });
+export function addNoteFormListItemListeners(listItem) {
+    const listItemTextInput = listItem.lastElementChild;
+    listItemTextInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            const newItem = createFormListItem();
+            addNoteFormListItemListeners(newItem);
+            listItem.parentElement.insertBefore(newItem, listItem.nextSibling);
+            const newItemTextInput = newItem.lastElementChild;
+            newItemTextInput.focus();
+        }
+        if (event.key === "Backspace" && listItemTextInput.value === "") {
+            listItem.remove();
+            if (listItem.previousSibling) {
+                const prevItemTextInput = listItem.previousSibling.lastElementChild;
+                prevItemTextInput.focus();
+            }
+        }
     });
 }
 
-function addNotePinListeners() {
+function addNoteFormListButtonListeners() {
+    const listButton = document.querySelector(".note-form__list-button");
+    listButton.addEventListener("click", function () {
+        const noteType = getNoteFormType() === "list" ? "note" : "list";
+        removeNoteFormBody();
+        insertNoteFormBody(noteType);
+    });
+}
+
+export function addNotePinListeners() {
     const pinButtons = document.querySelectorAll(".note__pin-icon");
     pinButtons.forEach(function (pinButton) {
         pinButton.addEventListener("click", function () {
@@ -54,29 +91,133 @@ function addNotePinListeners() {
     });
 }
 
+function addOutsideFormClickListener(noteForm, noteAddButton) {
+    document.addEventListener("click", function (e) {
+        const noteAddFormHidden = noteForm.classList.contains("note-form_hidden");
+        const notes = Array.from(document.querySelectorAll(".note"));
+        if (!noteAddFormHidden && !noteForm.contains(e.target) && !noteAddButton.contains(e.target) && !notes.some(note => note.contains(e.target))) {
+            toggleControllable(noteForm, "note-form_hidden");
+            toggleDarkBackground();
+            const noteFormType = getNoteFormType();
+            if (noteFormType === "list" || noteFormType === "note") {
+                if (!editing) {
+                    addNoteToDb();
+                } else {
+                    updateNote(editedNoteId, noteFormType);
+                }
+            } else {
+                if (!editing) {
+                    addReminderToDb();
+                } else {
+                    updateReminder(editedNoteId);
+                }
+            }
+            clearForm();
+            cleanFormImages();
+        }
+    })
+}
+
 function addNoteFormListeners() {
     const noteAddButton = document.querySelector(".main-panel__add-button");
     const noteForm = document.querySelector(".note-form");
     const pinButton = document.querySelector(".note-form__pin-checkbox");
+    const noteFooter = document.querySelector(".note-form__footer");
+    const noteType = getNoteType();
 
     noteAddButton.addEventListener("click", function () {
+        editing = false;
+        insertNoteFormBody(getNoteType());
+        if (noteType === "reminder") {
+            if (!noteFooter.classList.contains("note-form__footer_hidden")) {
+                noteFooter.classList.add("note-form__footer_hidden");
+            }
+        } else {
+            if (noteFooter.classList.contains("note-form__footer_hidden")) {
+                noteFooter.classList.remove("note-form__footer_hidden");
+            }
+        }
         toggleControllable(noteForm, "note-form_hidden");
         toggleDarkBackground();
     })
-    document.addEventListener("click", function (e) {
-        const noteAddFormHidden = noteForm.classList.contains("note-form_hidden");
-        if (!noteAddFormHidden
-            && !noteForm.contains(e.target)
-            && !noteAddButton.contains(e.target)
-        ) {
-            toggleControllable(noteForm, "note-form_hidden");
-            toggleDarkBackground();
-            addNoteToDb();
-        }
-    })
+    addOutsideFormClickListener(noteForm, noteAddButton);
+    addFileButtonListener();
 
     pinButton.addEventListener("click", function () {
         toggleControllable(pinButton, "note-form__pin-icon_opaque");
+    });
+}
+
+function addFileButtonListener() {
+    const fileButton = document.querySelector(".note-form__picture-button");
+    const fileInput = document.querySelector(".note-form__file-input");
+
+    fileButton.addEventListener("click", function () {
+        fileInput.click();
+    });
+}
+
+function addFileInputListener() {
+    const fileInput = document.querySelector(".note-form__file-input");
+    const imagesContainer = document.querySelector(".form-images-container");
+    fileInput.addEventListener("change", function (event) {
+        if (imagesContainer.children.length < 1) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (file.size < 512000) {
+                        drawFormImageElement(file);
+                    } else alert("File is too big, max size is 500kb");
+                }
+            }
+        } else alert("You can upload only one image");
+    });
+}
+
+export function addReminderEditListeners() {
+    const reminders = document.querySelectorAll(".reminder");
+    const noteForm = document.querySelector(".note-form");
+    reminders.forEach(reminder => {
+        reminder.addEventListener("click", function (event) {
+            if (!event.target.classList.contains("note__remove-button")) {
+                editedNoteId = reminder.id;
+                editing = true;
+                toggleControllable(noteForm, "note-form_hidden");
+                populateReminderForm(reminder.id);
+                toggleDarkBackground();
+            }
+        });
+    });
+}
+
+export function addRemoveNoteButtonListeners() {
+    const buttons = document.querySelectorAll(".note__remove-button");
+    buttons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            const noteType = getNoteType();
+            if (noteType === "note" || noteType === "list") {
+                db.removeNote(button.parentNode.id);
+            } else if (noteType === "reminder") {
+                db.removeReminder(button.parentNode.id);
+            }
+        });
+    });
+}
+
+export function addNoteEditListeners() {
+    const notes = document.querySelectorAll(".note");
+    const noteForm = document.querySelector(".note-form");
+    notes.forEach(function (note) {
+        note.addEventListener("click", function (event) {
+            if (!event.target.classList.contains("note__pin-icon") && !event.target.classList.contains("note__remove-button")) {
+                editedNoteId = note.id;
+                editing = true;
+                toggleControllable(noteForm, "note-form_hidden");
+                populateNoteForm(note.id);
+                toggleDarkBackground();
+            }
+        });
     });
 }
 
@@ -84,63 +225,50 @@ function addNotificationsListeners() {
     const notificationsButton = document.querySelector(".header__notification-button");
     const notifications = document.querySelector(".notifications");
     notificationsButton.addEventListener("click", function () {
+        cleanNotifications();
         toggleControllable(notifications, "notifications_hidden");
-        toggleDarkBackground()
+        toggleDarkBackground();
+        drawNotifications();
     });
     document.addEventListener("click", function (e) {
         const notificationsHidden = notifications.classList.contains("notifications_hidden");
-        if (!notificationsHidden
-            && !notifications.contains(e.target)
-            && !notificationsButton.contains(e.target)
-        ) {
+        if (!notificationsHidden && !notifications.contains(e.target) && !notificationsButton.contains(e.target)) {
             toggleControllable(notifications, "notifications_hidden");
             toggleDarkBackground();
         }
     })
 }
 
-function addTagsListeners() {
-    const tagsButtons = document.querySelectorAll(".tags-buttons__item");
+export function addTagsListeners(tagsButtons = null) {
+    if (tagsButtons === null) {
+        tagsButtons = document.querySelectorAll(".tags-buttons__item");
+    }
     tagsButtons.forEach(function (item, index) {
         item.addEventListener("click", function (event) {
-            toggleControllable(item, "tags-buttons__item_active");
-            toggleControllable(item.childNodes[1], "tags-buttons__icon_active");
+            if (event.target.classList.contains("tags-buttons__remove-item-button")) {
+                item.remove();
+                db.removeTag(item.textContent.slice(0, -1));
+            } else {
+                deactivateTags(event.target);
+                toggleControllable(item, "tags-buttons__item_active");
+                toggleControllable(item.firstElementChild, "tags-buttons__icon_active");
+
+                removeAllNoteElements();
+                if (item.classList.contains("tags-buttons__item_active")) {
+                    drawNotesByTag(item.textContent.slice(0, -1));
+                } else {
+                    drawNotes();
+                }
+            }
         });
     });
 }
 
 function addCategoriesListeners() {
     const categoriesButtons = document.querySelectorAll(".side-menu-categories__item");
-    categoriesButtons.forEach(function (item, index) {
-        item.addEventListener("click", function (event) {
+    categoriesButtons.forEach(function (item) {
+        item.addEventListener("click", function () {
             toggleCategoriesButton(item, categoriesButtons);
         });
     });
-}
-
-function toggleCategoriesButton(button, buttonsList) {
-    const buttonIcon = button.childNodes[1];
-    buttonsList.forEach(function (item, index) {
-        if (item.classList.contains("side-menu-categories__item_active")) {
-            item.classList.remove("side-menu-categories__item_active");
-            item.childNodes[1].classList.remove("side-menu-categories__icon_active");
-        }
-    });
-    toggleControllable(button, "side-menu-categories__item_active");
-    toggleControllable(buttonIcon, "side-menu-categories__icon_active");
-}
-
-function toggleDarkBackground() {
-    const mainPanel = document.querySelector(".main-panel");
-    const sideMenu = document.querySelector(".side-menu");
-    toggleControllable(mainPanel, "main-panel_darkened");
-    toggleControllable(sideMenu, "side-menu_darkened");
-}
-
-function toggleControllable(controllable, className) {
-    if (controllable.classList.contains(className)) {
-        controllable.classList.remove(className);
-    } else {
-        controllable.classList.add(className);
-    }
 }

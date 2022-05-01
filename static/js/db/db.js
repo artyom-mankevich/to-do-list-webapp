@@ -14,11 +14,25 @@ import {
     update,
     startAt,
     onChildRemoved,
+    get,
+    child,
+    remove,
+    equalTo,
+    set,
+    limitToFirst,
 } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
-import {List, Note} from "./entities.js";
+import {List, Note, Reminder} from "./entities.js";
 
-import {addNoteElement, changeNoteElement, removeNoteElement} from "../main/domManipulation.js";
+import {
+    drawNoteElement,
+    drawTagElement,
+    changeNoteElement,
+    removeNoteElementById,
+    addReminderElement,
+    removeReminderElement,
+    changeReminderElement
+} from "../main/domManipulation.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDYxCOzTTHcxGcitpvzOKSNYp2W4aqatz0",
@@ -37,28 +51,154 @@ class MyDatabase {
         const app = initializeApp(firebaseConfig);
         this.db = getDatabase(app);
         onChildAdded(query(ref(this.db, 'notes/'), orderByChild('timestamp'), startAt(initTime)), (snapshot) => {
-            addNoteElement(snapshot.key, snapshot.val());
+            drawNoteElement(snapshot.key, snapshot.val());
         });
         onChildChanged(ref(this.db, 'notes/'), (snapshot) => {
             changeNoteElement(snapshot.key, snapshot.val());
         });
         onChildRemoved(ref(this.db, 'notes/'), (snapshot) => {
-            removeNoteElement(snapshot.key);
+            removeNoteElementById(snapshot.key);
+        });
+        onChildAdded(ref(this.db, 'tags/'), (snapshot) => {
+            drawTagElement(snapshot.key);
+        });
+        onChildAdded(query(ref(this.db, 'reminders/'), orderByChild('timestamp'), startAt(initTime)), (snapshot) => {
+            addReminderElement(snapshot.key, snapshot.val());
+        });
+        onChildRemoved(ref(this.db, 'reminders/'), (snapshot) => {
+            removeReminderElement(snapshot.key);
+        });
+        onChildChanged(ref(this.db, 'reminders/'), (snapshot) => {
+            changeReminderElement(snapshot.key, snapshot.val());
         });
     }
 
-    addNote(title, content, timestamp, type, tag, pinned) {
-        push(ref(this.db, 'notes/'), {
-            title: title,
+    getLastTwoReminders() {
+        return new Promise((resolve, reject) => {
+            const reminders = [];
+            get(query(ref(this.db, 'reminders/'), orderByChild('eventTimestamp'), limitToFirst(2))).then((snapshot) => {
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        reminders.push(
+                            new Reminder(
+                                childSnapshot.key,
+                                childSnapshot.val().content,
+                                childSnapshot.val().eventTimestamp,
+                                childSnapshot.val().timestamp
+                            )
+                        );
+                    });
+                    resolve(reminders);
+                } else {
+                    reject('No reminders found');
+                }
+            });
+        });
+    }
+
+    getReminders() {
+        return new Promise((resolve, reject) => {
+            const reminders = [];
+            get(query(ref(this.db, 'reminders/')), orderByChild('eventTimestamp')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        reminders.push(
+                            new Reminder(
+                                childSnapshot.key,
+                                childSnapshot.val().content,
+                                childSnapshot.val().eventTimestamp,
+                                childSnapshot.val().timestamp
+                            )
+                        );
+                    });
+                    resolve(reminders);
+                } else {
+                    reject('No reminders found');
+                }
+            });
+        });
+    }
+
+    addReminder(content, eventTimestamp) {
+        push(ref(this.db, 'reminders/'), {
             content: content,
-            timestamp: timestamp,
-            type: type,
-            tag: tag,
-            pinned: pinned
+            eventTimestamp: eventTimestamp,
+            timestamp: Date.now()
         });
     }
 
-    updateNote(key, title, content, timestamp, type, tag, pinned, listItems={}) {
+    updateReminder(id, content, eventTimestamp) {
+        update(ref(this.db, `reminders/${id}`), {
+            content: content,
+            eventTimestamp: eventTimestamp,
+            timestamp: Date.now()
+        });
+    }
+
+    removeReminder(id) {
+        remove(ref(this.db, `reminders/${id}`));
+    }
+
+    getReminderByKey(key) {
+        return new Promise((resolve, reject) => {
+            get(ref(this.db, `reminders/${key}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    resolve(
+                        new Reminder(
+                            snapshot.key,
+                            snapshot.val().content,
+                            snapshot.val().eventTimestamp,
+                            snapshot.val().timestamp
+                        )
+                    );
+                } else {
+                    reject('No reminder found');
+                }
+            });
+        });
+    }
+
+    setTag(tag) {
+        set(ref(this.db, `tags/${tag}`), "");
+    }
+
+    removeTag(tag) {
+        remove(ref(this.db, `tags/${tag}`));
+    }
+
+    addNote(title, tag, timestamp, type, pinned, content = null, listItems = [], image = null) {
+        let newPostRef = null;
+        if (type === 'note') {
+            newPostRef = push(ref(this.db, 'notes/'), {
+                title: title,
+                content: content,
+                timestamp: timestamp,
+                type: type,
+                tag: tag,
+                pinned: pinned,
+            });
+        } else if (type === 'list') {
+            newPostRef = push(ref(this.db, 'notes/'), {
+                title: title,
+                timestamp: timestamp,
+                type: type,
+                tag: tag,
+                pinned: pinned,
+                listItems: listItems,
+            });
+        }
+        if (tag !== "") {
+            this.setTag(tag);
+        }
+        if (image) {
+            this.base64encodeImage(image).then(base64 => {
+                image = base64;
+                set(ref(this.db, `notes/${newPostRef.key}/image`), image);
+            });
+        }
+    }
+
+    updateNote(key, title, type, timestamp, pinned, tag, content = "", listItems = {}, image = null) {
         if (type === "note") {
             update(ref(this.db, 'notes/' + key), {
                 title: title,
@@ -66,17 +206,25 @@ class MyDatabase {
                 timestamp: timestamp,
                 type: type,
                 tag: tag,
-                pinned: pinned
+                pinned: pinned,
             });
         } else if (type === "list") {
             update(ref(this.db, 'notes/' + key), {
                 title: title,
-                content: content,
                 timestamp: timestamp,
                 type: type,
                 tag: tag,
                 pinned: pinned,
-                listItems: listItems
+                listItems: listItems,
+            });
+        }
+        if (tag !== "") {
+            this.setTag(tag);
+        }
+        if (image) {
+            this.base64encodeImage(image).then(base64 => {
+                image = base64;
+                set(ref(this.db, `notes/${key}/image`), image);
             });
         }
     }
@@ -87,15 +235,56 @@ class MyDatabase {
         });
     }
 
-    updateNoteListItem(key, listItemValue, listItemKey) {
-        const path = 'notes/' + key + '/listItems/' + listItemKey;
-        update(ref(this.db, path), {
-            checked: listItemValue
+    getNoteByKey(key) {
+        const dbRef = ref(this.db);
+        return new Promise((resolve, reject) => {
+            get(child(dbRef, `notes/${key}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    if (snapshot.val().type === 'note') {
+                        const note = new Note(
+                            snapshot.key,
+                            snapshot.val().title,
+                            snapshot.val().timestamp,
+                            snapshot.val().type,
+                            snapshot.val().tag,
+                            snapshot.val().pinned,
+                            snapshot.val().content
+                        );
+                        resolve(note);
+                    } else {
+                        const list = new List(
+                            snapshot.key,
+                            snapshot.val().title,
+                            snapshot.val().timestamp,
+                            snapshot.val().type,
+                            snapshot.val().tag,
+                            snapshot.val().pinned,
+                            snapshot.val().listItems
+                        );
+                        resolve(list);
+                    }
+                } else {
+                    reject("Couldn't find note with key: " + key);
+                }
+            });
         });
     }
 
     getNotes() {
         const notesRef = query(ref(this.db, 'notes/'), orderByChild('pinned'));
+        return this.getNotesPromiseByRef(notesRef);
+    }
+
+    getNotesByTag(tag) {
+        const notesRef = query(ref(this.db, 'notes/'), orderByChild('tag'), equalTo(tag));
+        return this.getNotesPromiseByRef(notesRef);
+    }
+
+    removeNote(key) {
+        remove(ref(this.db, 'notes/' + key));
+    }
+
+    getNotesPromiseByRef(notesRef) {
         return new Promise((resolve, reject) => {
             onValue(notesRef, (snapshot) => {
                 if (snapshot.val() == null) {
@@ -113,7 +302,8 @@ class MyDatabase {
                                     content.type,
                                     content.tag,
                                     content.pinned,
-                                    content.content
+                                    content.content,
+                                    content.image
                                 )
                             );
                         } else if (content.type === 'list') {
@@ -125,7 +315,8 @@ class MyDatabase {
                                     content.type,
                                     content.tag,
                                     content.pinned,
-                                    content.listItems
+                                    content.listItems,
+                                    content.image
                                 )
                             );
                         }
@@ -133,6 +324,19 @@ class MyDatabase {
                     resolve(notes);
                 }
             });
+        });
+    }
+
+    base64encodeImage(image) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(image);
+            reader.onload = function () {
+                resolve(reader.result);
+            };
+            reader.onerror = function (error) {
+                reject(error);
+            };
         });
     }
 }
