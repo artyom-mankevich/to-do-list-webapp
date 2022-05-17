@@ -33,23 +33,54 @@
     </section>
 </header>
 <section class="menu menu_hidden">
-    <section class="categories-menu categories-menu_hidden">
+    <section class="categories-menu">
         <h1 class="menu-title">Categories</h1>
         <ul class="categories-list">
             <li class="categories-list__item">Notes</li>
             <li class="categories-list__item">Reminders</li>
         </ul>
     </section>
-    <section class="tags-menu tags-menu_hidden">
+    <section class="tags-menu">
         <h1 class="menu-title">Tags</h1>
         <ul class="tags-list">
-            <li class="tags-list__item">work</li>
-            <li class="tags-list__item">home</li>
-            <li class="tags-list__item">cooking</li>
         </ul>
     </section>
 </section>
 <main class="main">
+    <section class="notifications notifications_hidden">
+    </section>
+    <section class="note-form note-form_hidden">
+        <section class="note-form__header">
+            <input class="note-form__input note-form__title"
+                   type="text"
+                   placeholder="Type your title"
+                   maxlength="30">
+            <input id="pin" class="note-form__pin-checkbox"
+                   type="checkbox">
+            <label class="note-form__pin-icon" for="pin">
+                <img src="../static/img/pin.svg"
+                     alt="Pin button">
+            </label>
+        </section>
+        <section class="note-form__body">
+        </section>
+        <section class="form-images-container">
+        </section>
+        <section class="note-form__footer">
+            <button class="note-form__list-button">
+                <img class="note-form__list-icon"
+                     src="../static/img/checked-square.png"
+                     alt="List button">
+            </button>
+            <input class="note-form__input note-form__tag-input" type="text"
+                   placeholder="add tag" maxlength="30">
+            <button class="note-form__picture-button">
+                <img class="note-form__picture-icon"
+                     src="../static/img/picture.svg" alt="Add picture">
+            </button>
+            <input class="note-form__file-input" type="file" accept="image/*">
+        </section>
+    </section>
     <section class="side-menu">
         <section class="side-menu-categories">
             <button class="side-menu-categories__item side-menu-categories__item_active">
@@ -66,28 +97,8 @@
         <div class="side-menu-tags">
             <h1 class="side-menu-tags__title">tags:</h1>
             <section class="tags-buttons">
-                <button class="tags-buttons__item">
-                    <img class="tags-buttons__icon"
-                         src="../static/img/bookmark.png" alt="Tag icon">
-                    work
-                </button>
-                <button class="tags-buttons__item">
-                    <img class="tags-buttons__icon"
-                         src="../static/img/bookmark.png" alt="Tag icon">
-                    home
-                </button>
-                <button class="tags-buttons__item">
-                    <img class="tags-buttons__icon"
-                         src="../static/img/bookmark.png" alt="Tag icon">
-                    cooking
-                </button>
             </section>
         </div>
-        <button class="side-menu-categories__item side-menu-categories__item_bottom">
-            <img class="side-menu-categories__icon"
-                 src="../static/img/trash.svg" alt="Trash icon">
-            Trash
-        </button>
     </section>
     <section class="main-panel">
         <button class="main-panel__add-button">
@@ -96,76 +107,14 @@
             Add new note
         </button>
         <section class="notes">
-            <article class="note">
-                <header class="note__header">
-                    <img class="note__pin-icon note__pin-icon_active"
-                         src="../static/img/pin.svg" alt="Pin icon">
-                    <h2 class="note__title">
-                        University
-                    </h2>
-                </header>
-                <p class="note__text">Do a mock-up for ITandDDP</p>
-            </article>
-            <article class="note">
-                <header class="note__header">
-                    <img class="note__pin-icon"
-                         src="../static/img/pin.svg" alt="Pin icon">
-                    <h2 class="note__title">
-                        Shopping list
-                    </h2>
-                </header>
-                <section class="note-list">
-                    <div class="note-list__item">
-                        <input class="note-list__checkbox" type="checkbox">
-                        <label class="note-list__text">eggs</label>
-                    </div>
-                    <div class="note-list__item">
-                        <input class="note-list__checkbox" type="checkbox">
-                        <label class="note-list__text">milk</label>
-                    </div>
-                    <div class="note-list__item">
-                        <input class="note-list__checkbox" type="checkbox">
-                        <label class="note-list__text">bread</label>
-                    </div>
-                    <div class="note-list__item">
-                        <input class="note-list__checkbox" type="checkbox">
-                        <label class="note-list__text">cheese</label>
-                    </div>
-                    <div class="note-list__item">
-                        <input class="note-list__checkbox" type="checkbox">
-                        <label class="note-list__text">rice</label>
-                    </div>
-                    <div class="note-list__item">
-                        <input class="note-list__checkbox" type="checkbox">
-                        <label class="note-list__text">pork</label>
-                    </div>
-                    <div class="note-list__item">
-                        <input class="note-list__checkbox" type="checkbox">
-                        <label class="note-list__text">toothpaste</label>
-                    </div>
-                    <img class="note-list__extension"
-                         src="../static/img/ellipsis.png"
-                         alt="Ellipsis">
-                </section>
-            </article>
-            <article class="note">
-                <header class="note__header">
-                    <img class="note__pin-icon"
-                         src="../static/img/pin.svg" alt="Pin icon">
-                    <h2 class="note__title">
-                        Home
-                    </h2>
-                </header>
-                <p class="note__text">
-                    Gotta buy a new dishwasher or call the repair service.
-                    Also fix the tap
-                </p>
-            </article>
         </section>
     </section>
 </main>
-<scripts>
-    <script type="text/javascript" src="../static/js/main.js"></script>
-</scripts>
+<script type="module" src="../static/js/db/entities.js"></script>
+<script type="module" src="../static/js/main/DOMToDb.js"></script>
+<script type="module" src="../static/js/main/domManipulation.js"></script>
+<script type="module" src="../static/js/db/db.js"></script>
+<script type="module" src="../static/js/main/eventListeners.js"></script>
+<script type="module" src="../static/js/main/main.js"></script>
 </body>
 </html>
