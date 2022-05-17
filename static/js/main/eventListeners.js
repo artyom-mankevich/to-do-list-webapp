@@ -15,7 +15,7 @@ import {
     removeNoteFormBody,
     toggleCategoriesButton,
     toggleControllable,
-    toggleDarkBackground
+    toggleDarkBackground, toggleMobileCategoriesButton, deactivateMobileTags
 } from "./domManipulation.js";
 import {db} from "../db/db.js";
 import {
@@ -33,15 +33,12 @@ let editedNoteId = 0;
 export function setEventListeners() {
     const menu = document.querySelector(".menu");
     const menuButton = document.querySelector(".menu-button");
-    const categoriesMenu = document.querySelector(".categories-menu");
-    const tagsMenu = document.querySelector(".tags-menu");
     menuButton.addEventListener("click", function () {
         toggleControllable(menu, "menu_hidden");
-        toggleControllable(categoriesMenu, "categories-menu_hidden");
-        toggleControllable(tagsMenu, "tags-menu_hidden");
     });
 
     addCategoriesListeners();
+    addMobileCategoriesListeners();
     addNotificationsListeners();
     addNoteFormListeners();
     addNoteFormListButtonListeners();
@@ -264,11 +261,39 @@ export function addTagsListeners(tagsButtons = null) {
     });
 }
 
+export function addMobileTagsListeners(tagsButtons = null) {
+    if (tagsButtons === null) {
+        tagsButtons = document.querySelectorAll(".tags-list__item");
+    }
+    tagsButtons.forEach(tagButton => {
+        tagButton.addEventListener("click", function (event) {
+            deactivateMobileTags(event.target);
+            toggleControllable(tagButton, "tags-list__item_active");
+
+            removeAllNoteElements();
+            if (tagButton.classList.contains("tags-list__item_active")) {
+                drawNotesByTag(tagButton.textContent);
+            } else {
+                drawNotes();
+            }
+        });
+    });
+}
+
 function addCategoriesListeners() {
     const categoriesButtons = document.querySelectorAll(".side-menu-categories__item");
     categoriesButtons.forEach(function (item) {
         item.addEventListener("click", function () {
             toggleCategoriesButton(item, categoriesButtons);
+        });
+    });
+}
+
+function addMobileCategoriesListeners() {
+    const categoriesButtons = document.querySelectorAll(".categories-list__item");
+    categoriesButtons.forEach(function (item) {
+        item.addEventListener("click", function () {
+            toggleMobileCategoriesButton(item, categoriesButtons);
         });
     });
 }

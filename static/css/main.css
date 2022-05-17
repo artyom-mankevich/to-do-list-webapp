@@ -81,6 +81,14 @@
     border-radius: 1rem;
 }
 
+@media screen and (max-width: 800px) {
+    .notifications {
+        left: 0;
+        width: 100%;
+        border-radius: 0;
+    }
+}
+
 .notifications_hidden {
     display: none;
     overflow: hidden;
@@ -112,6 +120,7 @@
     padding-block: 1%;
     transition: all .5s ease;
     will-change: transform;
+    overflow: hidden;
 }
 
 
@@ -166,6 +175,10 @@
     cursor: pointer;
 }
 
+.categories-list__item_active {
+    font-weight: bold;
+}
+
 .tags-menu {
     display: flex;
     justify-content: space-evenly;
@@ -194,6 +207,10 @@
     font-size: 1.4rem;
     color: gray;
     cursor: pointer;
+}
+
+.tags-list__item_active {
+    color: black;
 }
 
 .main {
@@ -388,6 +405,14 @@
     border-radius: 1rem;
     overflow: hidden;
     z-index: 1;
+}
+
+@media screen and (max-width: 800px) {
+    .note-form {
+        width: 100%;
+        top: 10%;
+        left: 0;
+    }
 }
 
 .note-form_hidden {

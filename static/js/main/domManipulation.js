@@ -1,5 +1,6 @@
 import {db} from "../db/db.js";
 import {
+    addMobileTagsListeners,
     addNoteEditListeners,
     addNoteFormListItemListeners,
     addNotePinListeners,
@@ -246,9 +247,40 @@ export function removeNoteElementById(noteKey) {
 
 export function drawTagElement(tag) {
     const tagsContainer = document.querySelector(".tags-buttons");
+    const mobileTagsContainer = document.querySelector(".tags-list");
     const tagButton = createTagElement(tag);
+    const mobileTagButton = createMobileTagElement(tag);
     tagsContainer.appendChild(tagButton);
+    mobileTagsContainer.appendChild(mobileTagButton);
     addTagsListeners([tagButton]);
+    addMobileTagsListeners([mobileTagButton]);
+}
+
+export function createTagElement(tag) {
+    const tagButton = document.createElement("button");
+    tagButton.classList.add("tags-buttons__item");
+
+    const tagImage = document.createElement("img");
+    tagImage.classList.add("tags-buttons__icon");
+    tagImage.src = "../static/img/bookmark.png";
+    tagImage.alt = "Tag icon";
+
+    const closeButton = document.createElement("button");
+    closeButton.classList.add("tags-buttons__remove-item-button");
+    closeButton.innerText = "✖";
+
+    tagButton.appendChild(tagImage);
+    tagButton.appendChild(document.createTextNode(tag));
+    tagButton.appendChild(closeButton);
+
+    return tagButton;
+}
+
+export function createMobileTagElement(tag) {
+    const mobileTag = document.createElement("li");
+    mobileTag.classList.add("tags-list__item");
+    mobileTag.innerText = tag;
+    return mobileTag;
 }
 
 export function drawNoteElement(noteKey, noteVal) {
@@ -266,6 +298,25 @@ export function drawNoteElement(noteKey, noteVal) {
     addNoteEditListeners();
     addNotePinListeners();
     addRemoveNoteButtonListeners();
+}
+
+export function deactivateTags(eventTarget) {
+    const tags = document.querySelectorAll(".tags-buttons__item");
+    tags.forEach(function (item) {
+        if (item.classList.contains("tags-buttons__item_active") && item !== eventTarget) {
+            item.classList.remove("tags-buttons__item_active");
+            item.firstElementChild.classList.remove("tags-buttons__icon_active");
+        }
+    });
+}
+
+export function deactivateMobileTags(eventTarget) {
+    const tags = document.querySelectorAll(".tags-list__item");
+    tags.forEach(function (item) {
+        if (item.classList.contains("tags-list__item_active") && item !== eventTarget) {
+            item.classList.remove("tags-list__item_active");
+        }
+    });
 }
 
 export function changeNoteElement(noteKey, noteVal) {
@@ -385,36 +436,6 @@ function createListItemElement(key, note) {
     return listItemElement;
 }
 
-export function createTagElement(tag) {
-    const tagButton = document.createElement("button");
-    tagButton.classList.add("tags-buttons__item");
-
-    const tagImage = document.createElement("img");
-    tagImage.classList.add("tags-buttons__icon");
-    tagImage.src = "../static/img/bookmark.png";
-    tagImage.alt = "Tag icon";
-
-    const closeButton = document.createElement("button");
-    closeButton.classList.add("tags-buttons__remove-item-button");
-    closeButton.innerText = "✖";
-
-    tagButton.appendChild(tagImage);
-    tagButton.appendChild(document.createTextNode(tag));
-    tagButton.appendChild(closeButton);
-
-    return tagButton;
-}
-
-export function deactivateTags(eventTarget) {
-    const tags = document.querySelectorAll(".tags-buttons__item");
-    tags.forEach(function (item) {
-        if (item.classList.contains("tags-buttons__item_active") && item !== eventTarget) {
-            item.classList.remove("tags-buttons__item_active");
-            item.firstElementChild.classList.remove("tags-buttons__icon_active");
-        }
-    });
-}
-
 function getNoteListBody(note) {
     const noteBody = document.createElement("ul");
     noteBody.classList.add("note-list");
@@ -471,6 +492,30 @@ export function toggleCategoriesButton(button, buttonsList) {
     }
     toggleControllable(button, "side-menu-categories__item_active");
     toggleControllable(buttonIcon, "side-menu-categories__icon_active");
+}
+
+export function toggleMobileCategoriesButton(item, buttons) {
+    buttons.forEach(button => {
+        if (button.classList.contains("categories-list__item_active")) {
+            button.classList.remove("categories-list__item_active");
+        }
+    })
+    removeAllNoteElements();
+    const mobileTags = document.querySelector(".tags-menu");
+    if (item.innerText === "Notes") {
+        drawNotes();
+        if (mobileTags.classList.contains("tags-menu_hidden")) {
+            mobileTags.classList.remove("tags-menu_hidden");
+        }
+    } else if (item.innerText === "Reminders") {
+        drawReminders()
+        if (!mobileTags.classList.contains("tags-menu_hidden")) {
+            mobileTags.classList.add("tags-menu_hidden");
+        }
+    }
+    toggleControllable(item, "categories-list__item_active");
+    const menu = document.querySelector(".menu");
+    toggleControllable(menu, "menu_hidden");
 }
 
 export function getNoteType() {
