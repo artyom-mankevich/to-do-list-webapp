@@ -50,7 +50,7 @@ function setSubmitEventListeners() {
             const password2 = document.querySelector('#password2Input').value;
             auth.createUserWithEmailAndPassword(email, password2).then(response => {
                 if (response) {
-                    window.location.replace('/templates/main.html');
+                    window.location.replace('/to-do-list-webapp/templates/main.html');
                 }
             }).catch(() => {
                 alert("Registration failed");

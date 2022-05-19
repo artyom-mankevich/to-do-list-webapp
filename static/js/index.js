@@ -5,9 +5,9 @@ function setGetStartedButtonListeners() {
     getStartedButton.addEventListener('click', () => {
         console.log(sessionStorage.getItem('userId'));
         if (sessionStorage.getItem('userId') != "null") {
-            window.location.replace('templates/main.html');
+            window.location.replace('/to-do-list-webapp/templates/main.html');
         } else {
-            window.location.replace('templates/login.html');
+            window.location.replace('/to-do-list-webapp/templates/login.html');
         }
     });
 }

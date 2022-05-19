@@ -8,6 +8,6 @@ setEventListeners();
 
 function checkAuth() {
     if (sessionStorage.getItem('userId') == null) {
-        window.location.replace('../templates/login.html');
+        window.location.replace('/to-do-list-webapp/templates/login.html');
     }
 }

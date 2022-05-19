@@ -29,7 +29,7 @@ function setSubmitListeners() {
         if (validateAllInputs()) {
             auth.signInWithEmailAndPassword(email, password).then(value => {
                 if (value) {
-                    window.location.replace("/templates/main.html");
+                    window.location.replace("/to-do-list-webapp/templates/main.html");
                 }
             }).catch(() => {
                 const authError = document.querySelector('#authError');
