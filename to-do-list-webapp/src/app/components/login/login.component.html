@@ -1,0 +1,26 @@
+<section class="card">
+  <header class="card-logo">
+    <img class="header-logo__icon header-logo__icon_blue"
+         src="assets/check.svg"
+         alt="Logo icon">
+    <a class="header-logo__title" routerLink="">To Do</a>
+  </header>
+  <section class="card-form">
+    <div class="card-form__item">
+      <label class="card__label" for="emailInput">Email:</label>
+      <input id="emailInput" class="card__input" type="email">
+      <p id="emailError" class="input-error">Email is invalid</p>
+    </div>
+    <div class="card-form__item">
+      <label class="card__label" for="password1Input">Password:</label>
+      <input id="password1Input" class="card__input" type="password">
+      <p id="password1Error" class="input-error">Password is too short</p>
+    </div>
+    <p id="authError" class="input-error">Authentication failed. Please try again.</p>
+    <input class="card__submit" type="submit" value="Log in">
+  </section>
+  <div class="card-auth">
+    <p class="card-auth__text">Don't have an account?</p>
+    <a class="card-auth__link" routerLink="/signup">Sign up</a>
+  </div>
+</section>

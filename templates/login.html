@@ -17,8 +17,8 @@
         <a class="header-logo__title" href="../index.html">To Do</a>
     </div>
     <section class="header-auth">
-        <a class="header-auth__item" href="../templates/login.html">Log in</a>
-        <a class="header-auth__item" href="../templates/signup.html">Sign Up</a>
+<!--        <a class="header-auth__item" href="../templates/login.html">Log in</a>-->
+<!--        <a class="header-auth__item" href="../templates/signup.html">Sign Up</a>-->
     </section>
 </header>
 <main class="main">
@@ -31,16 +31,17 @@
         </header>
         <section class="card-form">
             <div class="card-form__item">
-                <label class="card__label" for="usernameInput">Username:</label>
-                <input id="usernameInput" class="card__input" type="text">
+                <label class="card__label" for="emailInput">Email:</label>
+                <input id="emailInput" class="card__input" type="email">
+                <p id="emailError" class="input-error">Email is invalid</p>
             </div>
             <div class="card-form__item">
-                <label class="card__label" for="passwordInput">Password:</label>
-                <input id="passwordInput" class="card__input" type="password">
+                <label class="card__label" for="password1Input">Password:</label>
+                <input id="password1Input" class="card__input" type="password">
+                <p id="password1Error" class="input-error">Password is too short</p>
             </div>
-            <!--     in real project input will be used instead of a       -->
-            <!--<input class="card__submit" type="submit" value="Log in">-->
-            <a class="card__submit-link" href="main.html">Log in</a>
+            <p id="authError" class="input-error">Authentication failed. Please try again.</p>
+            <input class="card__submit" type="submit" value="Log in">
         </section>
         <div class="card-auth">
             <p class="card-auth__text">Don't have an account?</p>
@@ -48,5 +49,8 @@
         </div>
     </section>
 </main>
+<script type="module" src="../static/js/config.js"></script>
+<script type="module" src="../static/js/auth/auth.js"></script>
+<script type="module" src="../static/js/auth/login.js"></script>
 </body>
 </html>

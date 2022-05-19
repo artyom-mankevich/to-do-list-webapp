@@ -5,7 +5,13 @@
     flex-direction: column;
     background-color: black;
     box-sizing: border-box;
-    flex: 1;
+    flex: 1;    
+}
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    flex-direction: column;
 }
 
 @media screen and (max-width: 800px) {
@@ -47,7 +53,7 @@
     }
 }
 
-.main-panel__start-button {
+.main-panel__start-link {
     text-decoration: none;
     background-color: #004BBC;
     color: white;
@@ -58,11 +64,9 @@
     font-weight: 600;
     transition: linear 200ms;
     margin-bottom: 10%;
-    border: none;
-    cursor: pointer;
 }
 
-.main-panel__start-button:hover {
+.main-panel__start-link:hover {
     background-color: #005ce4;
 }
 

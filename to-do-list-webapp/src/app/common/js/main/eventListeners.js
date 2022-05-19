@@ -54,8 +54,6 @@ function addLogoutListener() {
     const logoutButton = document.querySelector(".header-auth__item");
     logoutButton.addEventListener("click", function () {
         auth.signOut();
-        console.log(sessionStorage.getItem("userId"));
-        window.location.replace('../templates/login.html');
     });
 }
 
