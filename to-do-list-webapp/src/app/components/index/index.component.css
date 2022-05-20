@@ -5,7 +5,7 @@
     flex-direction: column;
     background-color: black;
     box-sizing: border-box;
-    flex: 1;    
+    flex: 1;
 }
 :host {
     display: flex;
@@ -68,6 +68,25 @@
 
 .main-panel__start-link:hover {
     background-color: #005ce4;
+}
+
+.main-panel__start-button {
+  text-decoration: none;
+  background-color: #004BBC;
+  color: white;
+  border-radius: 2rem;
+  padding-block: 1rem;
+  padding-inline: .6rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  transition: linear 200ms;
+  margin-bottom: 10%;
+  border: none;
+  cursor: pointer;
+}
+
+.main-panel__start-button:hover {
+  background-color: #005ce4;
 }
 
 .main-notes {

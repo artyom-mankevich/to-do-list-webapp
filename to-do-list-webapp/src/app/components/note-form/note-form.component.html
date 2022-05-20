@@ -23,6 +23,10 @@
             <input [(ngModel)]="currentEditedNote.listItems[i].checked" type="checkbox" class="note-list__checkbox" [checked]="listItem.checked">
             <input [(ngModel)]="currentEditedNote.listItems[i].body" value="{{listItem.body}}" type="text" class="note-form__input note-list__text" placeholder="new item" maxlength="50">
           </li>
+          <li *ngIf="currentEditedNote.listItems.length == 0" class="note-list__item" id="0">
+            <input [(ngModel)]="currentEditedNote.listItems[0].checked" type="checkbox" class="note-list__checkbox">
+            <input [(ngModel)]="currentEditedNote.listItems[0].body" type="text" class="note-form__input note-list__text" placeholder="new item" maxlength="50">
+          </li>
         </ul>
       </ng-template>
     </section>
@@ -31,7 +35,7 @@
     <img [(ngModel)]="currentEditedNote.image" class="form-images-container__item" *ngIf="currentEditedNote?.image" src="{{currentEditedNote?.image}}" alt="">
   </section>
   <section class="note-form__footer">
-    <button class="note-form__list-button">
+    <button class="note-form__list-button" (click)="formListButtonClick()">
       <img class="note-form__list-icon"
            src="assets/checked-square.png"
            alt="List button">

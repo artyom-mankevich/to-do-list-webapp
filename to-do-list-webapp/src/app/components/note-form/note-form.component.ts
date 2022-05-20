@@ -1,14 +1,25 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FirebaseService} from "../../services/firebase.service";
-import {List, ListItem, Note} from "../../common/entities";
+import {ListItem, Note} from "../../common/entities";
 
 @Component({
   selector: 'app-note-form',
   templateUrl: './note-form.component.html',
   styleUrls: ['./note-form.component.css']
 })
-export class NoteFormComponent implements OnInit, OnChanges {
-  @Input() currentEditedNote: Note | List | null = null;
+export class NoteFormComponent implements OnInit {
+  @Input() currentEditedNote: Note = new Note(
+    null,
+    "",
+    Date.now(),
+    "note",
+    "",
+    false,
+    "",
+    "",
+    []
+  );
+
 
   constructor(private fbService: FirebaseService) {
   }
@@ -16,9 +27,12 @@ export class NoteFormComponent implements OnInit, OnChanges {
   ngOnInit(): void {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['currentEditedNote']) {
-      this.currentEditedNote = changes['currentEditedNote'].currentValue;
+  formListButtonClick() {
+    this.currentEditedNote.type = this.currentEditedNote.type == 'list'? 'note' : 'list'
+    if (this.currentEditedNote.type == 'list') {
+      this.currentEditedNote.listItems = [
+        new ListItem("0", "", false)
+      ];
     }
   }
 }

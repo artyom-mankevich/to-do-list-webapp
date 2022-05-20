@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
-import {List, Note, Reminder} from "../../common/entities";
+import {Note, Reminder} from "../../common/entities";
 import {FirebaseService} from "../../services/firebase.service";
 import {Router} from "@angular/router";
 import {NoteFormComponent} from "../note-form/note-form.component";
@@ -13,12 +13,12 @@ export class MainComponent implements OnInit {
   notifications: Reminder[] = [];
   reminders: Reminder[] = [];
   tags: string[] = [];
-  notes: (Note | List)[] = [];
+  notes: Note[] = [];
   formShown: boolean = false;
 
   @ViewChild(NoteFormComponent) noteFormComponent!: NoteFormComponent;
   @ViewChild('notesContainer') notesContainer: ElementRef | undefined;
-  currentEditedNote: Note | List | null = null;
+  // currentEditedNote: Note | List = new Note(null, "", Date.now(), "note", "", false, "", "");
 
   constructor(
     private fbService: FirebaseService,
@@ -53,20 +53,29 @@ export class MainComponent implements OnInit {
       && !noteAddButton?.contains(event.target)
       && !notes.some(note => note.contains(event.target))
     ) {
-      this.currentEditedNote = this.noteFormComponent.currentEditedNote;
+      const currentEditedNote = this.noteFormComponent.currentEditedNote;
 
-      if (!this.currentEditedNote) return;
-      if (this.currentEditedNote.title === ''
-        && (this.currentEditedNote.content === '' || this.currentEditedNote.listItems.length === 0)) {
+      if (currentEditedNote.title === ''
+        && (currentEditedNote.content === '' || currentEditedNote.listItems.length === 0)) {
         return;
       }
-      if (!this.currentEditedNote.key) {
-        this.fbService.addNote(this.currentEditedNote);
+      if (!currentEditedNote.key) {
+        this.fbService.addNote(currentEditedNote);
       } else {
-        this.fbService.updateNote(this.currentEditedNote!);
+        this.fbService.updateNote(currentEditedNote!);
       }
       this.formShown = false;
-      this.currentEditedNote = null;
+      this.noteFormComponent.currentEditedNote = new Note(
+        null,
+        "",
+        Date.now(),
+        "note",
+        "",
+        false,
+        "",
+        "",
+        []
+      );
     }
   }
 
@@ -78,16 +87,21 @@ export class MainComponent implements OnInit {
     this.tags.splice(this.tags.indexOf(tag), 1);
   }
 
-  addToNotes(note: Note | List): void {
+  addToNotes(note: Note): void {
+    console.log(note);
     this.notes.push(note);
     this.sortNotes();
   }
 
   sortNotes(): void {
-    this.notes.sort((a: (Note | List), b: Note | List) => {
+    this.notes.sort((a: Note, b: Note) => {
       const aPinned = a.pinned ? 1 : 0;
       const bPinned = b.pinned ? 1 : 0;
       return bPinned - aPinned;
     });
+  }
+
+  emitPinChange(noteKey: string) {
+    this.pinNoteChange.emit(noteKey);
   }
 }

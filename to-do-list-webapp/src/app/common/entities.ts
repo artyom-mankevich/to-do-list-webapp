@@ -34,18 +34,9 @@ export class Note extends AbstractNote {
   listItems: ListItem[] = [];
   content: string;
 
-  constructor(key: string | null, title: string, timestamp: number, type: string, tag: string, pinned: boolean, content: string, image: string) {
+  constructor(key: string | null, title: string, timestamp: number, type: string, tag: string, pinned: boolean, content: string, image: string, listItems: ListItem[]) {
     super(key, title, timestamp, type, tag, pinned, image);
     this.content = content;
-  }
-}
-
-export class List extends AbstractNote {
-  listItems: ListItem[] = [];
-  content: string = "";
-
-  constructor(key: string | null, title: string, timestamp: number, type: string, tag: string, pinned: boolean, listItems: any, image: string) {
-    super(key, title, timestamp, type, tag, pinned, image);
     this.listItems = listItems;
   }
 }

@@ -15,7 +15,7 @@
 <main class="main">
   <section class="notifications notifications_hidden">
   </section>
-<app-note-form [currentEditedNote]="currentEditedNote" *ngIf="formShown" #noteForm></app-note-form>
+<app-note-form *ngIf="formShown" #noteForm></app-note-form>
   <section class="side-menu" [ngClass]="formShown ? 'side-menu_darkened' : ''">
     <section class="side-menu-categories">
       <button class="side-menu-categories__item side-menu-categories__item_active">
@@ -51,7 +51,7 @@
       <article *ngFor="let note of notes" class="note" id="{{note.key}}">
         <section class="note__header">
           <img [ngClass]="note.pinned ? 'note__pin-icon_active' : ''" class="note__pin-icon"
-               src="assets/pin.svg" alt="Pin icon">
+               src="assets/pin.svg" alt="Pin icon" (click)="emitPinChange(note.key)">
           <h2 class="note__title">{{note.title}}</h2>
         </section>
         <div *ngIf="note.type==='note'; else elseBlock">

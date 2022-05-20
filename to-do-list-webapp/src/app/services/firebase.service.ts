@@ -4,7 +4,7 @@ import {AngularFireAuth} from "@angular/fire/compat/auth";
 import {Router} from "@angular/router";
 import {Observable, of} from "rxjs";
 import {onAuthStateChanged} from "@angular/fire/auth";
-import {List, ListItem, Note, Reminder} from "../common/entities";
+import {ListItem, Note, Reminder} from "../common/entities";
 import {query, ref} from "@angular/fire/database";
 import {getBlob} from "@angular/fire/storage";
 
@@ -167,29 +167,18 @@ export class FirebaseService {
     return of(tags);
   }
 
-  async addNote(note: Note | List): Promise<void> {
+  async addNote(note: Note): Promise<void> {
     const uid = this.getUid();
-    if (note instanceof Note) {
-      this.db.database.ref(`${uid}/notes/`).push({
-        title: note.title,
-        content: note.content,
-        timestamp: Date.now(),
-        type: note.type,
-        tag: note.tag,
-        pinned: note.pinned,
-        image: note.image
-      });
-    } else {
-      this.db.database.ref(`${uid}/notes/`).push({
-        title: note.title,
-        timestamp: note.timestamp,
-        type: note.type,
-        tag: note.tag,
-        pinned: note.pinned,
-        listItems: note.listItems,
-        image: note.image
-      });
-    }
+    this.db.database.ref(`${uid}/notes/`).push({
+      title: note.title,
+      content: note.content,
+      timestamp: Date.now(),
+      type: note.type,
+      tag: note.tag,
+      pinned: note.pinned,
+      image: note.image,
+      listItems: note.listItems
+    });
 
     if (note.tag !== "") {
       this.setTag(note.tag);
@@ -203,48 +192,34 @@ export class FirebaseService {
     }
   }
 
-  noteOnChildAdded(callback: (note: Note | List) => void): void {
+  noteOnChildAdded(callback: (note: Note) => void): void {
     const uid = this.getUid();
     this.db.database.ref(`${uid}/notes`).on('child_added', snapshot => {
-      if (snapshot.val().type === 'note') {
-        const note: Note = new Note(
-          snapshot.key,
-          snapshot.val().title,
-          snapshot.val().timestamp,
-          snapshot.val().type,
-          snapshot.val().tag,
-          snapshot.val().pinned,
-          snapshot.val().content,
-          snapshot.val().image
+      const listItems: ListItem[] = [];
+      for (const key in snapshot.val().listItems) {
+        listItems.push(
+          new ListItem(
+            key,
+            snapshot.val().listItems[key].body,
+            snapshot.val().listItems[key].checked
+          )
         );
-        callback(note);
-      } else if (snapshot.val().type === 'list') {
-        const listItems: ListItem[] = [];
-        for (const key in snapshot.val().listItems) {
-          listItems.push(
-            new ListItem(
-              key,
-              snapshot.val().listItems[key].body,
-              snapshot.val().listItems[key].checked
-            )
-          );
-        }
-        const list: List = new List(
-          snapshot.key,
-          snapshot.val().title,
-          snapshot.val().timestamp,
-          snapshot.val().type,
-          snapshot.val().tag,
-          snapshot.val().pinned,
-          listItems,
-          snapshot.val().image
-        );
-        callback(list);
       }
+      const note: Note = new Note(
+        snapshot.key,
+        snapshot.val().title,
+        snapshot.val().timestamp,
+        snapshot.val().type,
+        snapshot.val().tag,
+        snapshot.val().pinned,
+        snapshot.val().content,
+        snapshot.val().image,
+        listItems);
+      callback(note);
     });
   }
 
-  async updateNote(note: Note | List): Promise<void> {
+  async updateNote(note: Note): Promise<void> {
     const uid = this.getUid();
     this.db.database.ref(`${uid}/notes/${note.key}`).update({
       title: note.title,
@@ -277,63 +252,58 @@ export class FirebaseService {
     const uid = this.getUid();
     await this.db.database.ref(`${uid}/notes/${key}`).get().then(snapshot => {
       if (snapshot.exists()) {
-        const note: Note | List | null = null;
-        if (snapshot.val().type === 'note') {
-          const note: Note = new Note(
-            snapshot.key,
-            snapshot.val().title,
-            snapshot.val().timestamp,
-            snapshot.val().type,
-            snapshot.val().tag,
-            snapshot.val().pinned,
-            snapshot.val().content,
-            snapshot.val().image
+        const listItems: ListItem[] = [];
+        for (const key in snapshot.val().listItems) {
+          listItems.push(
+            new ListItem(
+              key,
+              snapshot.val().listItems[key].body,
+              snapshot.val().listItems[key].checked
+            )
           );
-          return of(note);
-        } else {
-          const list: List = new List(
-            snapshot.key,
-            snapshot.val().title,
-            snapshot.val().timestamp,
-            snapshot.val().type,
-            snapshot.val().tag,
-            snapshot.val().pinned,
-            snapshot.val().listItems,
-            snapshot.val().image
-          );
-          return of(list);
         }
+        const note: Note = new Note(
+          snapshot.key,
+          snapshot.val().title,
+          snapshot.val().timestamp,
+          snapshot.val().type,
+          snapshot.val().tag,
+          snapshot.val().pinned,
+          snapshot.val().content,
+          snapshot.val().image,
+          listItems);
+        return of(note);
       }
       throw new Error('Note not found');
     });
     throw new Error('Note not found');
   }
 
-  async getNotes(): Promise<Observable<(Note | List)[]>> {
+  async getNotes(): Promise<Observable<Note[]>> {
     const uid = this.getUid();
-    const notes: (Note | List)[] = [];
+    const notes: Note[] = [];
     await this.db.database.ref(`${uid}/notes/`)
       .orderByChild('pinned')
       .get()
       .then(snapshot => {
         snapshot.forEach(childSnapshot => {
-          const note: Note | List = childSnapshot.val();
+          const note: Note = childSnapshot.val();
           notes.push(note);
         });
       });
     return of(notes);
   }
 
-  async getNotesByTag(tag: string): Promise<Observable<Note[] | List[]>> {
+  async getNotesByTag(tag: string): Promise<Observable<Note[]>> {
     const uid = this.getUid();
-    const notes: Note[] & List[] = [];
+    const notes: Note[] = [];
     await this.db.database.ref(`${uid}/notes/`)
       .orderByChild('tag')
       .equalTo(tag)
       .get()
       .then(snapshot => {
         snapshot.forEach(childSnapshot => {
-          const note: Note & List = childSnapshot.val();
+          const note: Note = childSnapshot.val();
           notes.push(note);
         });
       });
