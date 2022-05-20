@@ -167,6 +167,7 @@ export class FirebaseService {
 
   async addNote(note: Note): Promise<void> {
     const uid = this.getUid();
+    note.listItems = note.listItems.filter(item => item.body !== '');
     this.db.database.ref(`${uid}/notes/`).push({
       title: note.title,
       content: note.content,
@@ -232,6 +233,7 @@ export class FirebaseService {
 
   async updateNote(note: Note): Promise<void> {
     const uid = this.getUid();
+    note.listItems = note.listItems.filter(item => item.body !== '');
     await this.db.database.ref(`${uid}/notes/${note.key}`).update({
       title: note.title,
       timestamp: Date.now(),
@@ -291,7 +293,7 @@ export class FirebaseService {
       .get()
       .then(snapshot => {
         snapshot.forEach(childSnapshot => {
-          const note: Note = childSnapshot.val();
+          const note: Note = FirebaseService.noteFromSnapshot(childSnapshot);
           notes.push(note);
         });
       });
