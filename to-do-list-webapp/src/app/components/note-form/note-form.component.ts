@@ -16,7 +16,7 @@ export class NoteFormComponent implements OnInit, OnChanges {
     false,
     "",
     "",
-    []
+    [new ListItem("0", "", false)]
   );
 
 
@@ -60,6 +60,17 @@ export class NoteFormComponent implements OnInit, OnChanges {
     const fileInput = document.querySelector('#fileInput');
     // @ts-ignore
     fileInput!.click();
-    console.log(fileInput);
+  }
+
+  listItemKeyUp($event: KeyboardEvent, index: number) {
+    if ($event.key == 'Enter') {
+      this.editedNote.listItems.splice(index + 1, 0, new ListItem("0", "", false));
+    } else if ($event.key == 'Backspace' && index == 0) {
+      this.editedNote.listItems.splice(index, 1);
+    }
+  }
+
+  removeFormImage() {
+    this.editedNote.image = "";
   }
 }

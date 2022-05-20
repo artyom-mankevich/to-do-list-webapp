@@ -105,6 +105,7 @@
 .form-images-container__item {
   max-height: 100px;
   width: auto;
+  cursor: pointer;
 }
 
 .note-form__footer {

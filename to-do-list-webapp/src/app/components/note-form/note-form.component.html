@@ -5,12 +5,6 @@
            type="text"
            placeholder="Type your title"
            maxlength="30">
-    <input [(ngModel)]="editedNote.pinned" id="pin" class="note-form__pin-checkbox"
-           type="checkbox" [checked]="editedNote?.pinned">
-    <label class="note-form__pin-icon" for="pin">
-      <img src="assets/pin.svg"
-           alt="Pin button">
-    </label>
   </section>
   <section class="note-form__body">
     <section class="note-form__body">
@@ -21,18 +15,14 @@
           <li *ngFor="let listItem of editedNote?.listItems; index as i"
               id="{{listItem.key}}" class="note-list__item">
             <input [(ngModel)]="editedNote.listItems[i].checked" type="checkbox" class="note-list__checkbox" [checked]="listItem.checked">
-            <input [(ngModel)]="editedNote.listItems[i].body" value="{{listItem.body}}" type="text" class="note-form__input note-list__text" placeholder="new item" maxlength="50">
-          </li>
-          <li *ngIf="editedNote.listItems.length == 0" class="note-list__item" id="0">
-            <input [(ngModel)]="editedNote.listItems[0].checked" type="checkbox" class="note-list__checkbox">
-            <input [(ngModel)]="editedNote.listItems[0].body" type="text" class="note-form__input note-list__text" placeholder="new item" maxlength="50">
+            <input (keyup)="listItemKeyUp($event, i)" [(ngModel)]="editedNote.listItems[i].body" value="{{listItem.body}}" type="text" class="note-form__input note-list__text" placeholder="new item" maxlength="50">
           </li>
         </ul>
       </ng-template>
     </section>
   </section>
   <section class="form-images-container">
-    <img [(ngModel)]="editedNote.image" class="form-images-container__item" *ngIf="editedNote?.image" src="{{editedNote?.image}}" alt="">
+    <img (click)="removeFormImage()" class="form-images-container__item" src="{{editedNote.image}}" alt="">
   </section>
   <section class="note-form__footer">
     <button class="note-form__list-button" (click)="formListButtonClick()">
