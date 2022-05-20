@@ -32,11 +32,11 @@
     <div class="side-menu-tags">
       <h1 class="side-menu-tags__title">tags:</h1>
       <section class="tags-buttons">
-        <button *ngFor="let tag of tags" class="tags-buttons__item">
-          <img class="tags-buttons__icon"
+        <button *ngFor="let tag of tags" [ngClass]="tag == currentTag? 'tags-buttons__item_active' : ''" class="tags-buttons__item" (click)="clickTag($event, tag)">
+          <img [ngClass]="tag === currentTag? 'tags-buttons__icon_active' : ''" class="tags-buttons__icon"
                src="assets/bookmark.png" alt="Tag icon">
           {{tag}}
-          <button class="tags-buttons__remove-item-button">✖</button>
+          <button class="tags-buttons__remove-item-button" (click)="removeTag(tag)">✖</button>
         </button>
       </section>
     </div>

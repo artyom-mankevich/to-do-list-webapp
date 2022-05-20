@@ -26,6 +26,7 @@ export class MainComponent implements OnInit {
     "",
     []
   );
+  currentTag: string = '';
 
   @ViewChild(NoteFormComponent) noteFormComponent!: NoteFormComponent;
   @ViewChild('notesContainer') notesContainer: ElementRef | undefined;
@@ -69,7 +70,9 @@ export class MainComponent implements OnInit {
       this.formShown = false;
 
       if (currentEditedNote.title === ''
-        && (currentEditedNote.content === '' || currentEditedNote.listItems.length === 0)) {
+        && currentEditedNote.content === ''
+        && currentEditedNote.listItems.length === 0
+        && currentEditedNote.image === '') {
         return;
       }
       if (!currentEditedNote.key) {
@@ -152,5 +155,35 @@ export class MainComponent implements OnInit {
   removeNote(key: string | null) {
     if (key == null) return;
     this.fbService.removeNote(key);
+  }
+
+  clickTag($event: MouseEvent, tag: string) {
+    if (this.currentTag === tag) {
+      this.currentTag = '';
+    } else {
+      this.currentTag = tag;
+    }
+    this.filterNotesByTag();
+  }
+
+  private filterNotesByTag() {
+    if (this.currentTag !== '') {
+      this.notes = this.notes.filter(note => note.tag === this.currentTag);
+    } else {
+      this.fbService.getNotes().then(notes => {
+        notes.subscribe(notes => {
+          this.notes = notes;
+          this.sortNotes();
+        });
+      })
+    }
+  }
+
+  removeTag(tag: string) {
+    this.fbService.removeTag(tag);
+    if (this.currentTag === tag) {
+      this.currentTag = '';
+      this.filterNotesByTag();
+    }
   }
 }
