@@ -1,5 +1,4 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {FirebaseService} from "../../services/firebase.service";
 import {ListItem, Note} from "../../common/entities";
 
 @Component({
@@ -40,5 +39,27 @@ export class NoteFormComponent implements OnInit, OnChanges {
         new ListItem("0", "", false)
       ];
     }
+  }
+
+  fileInput(fileInput: any) {
+    if (fileInput.target.files && fileInput.target.files[0]) {
+      const file = fileInput.target.files[0];
+      if (file.size > 500000) {
+        alert("File is too big, max size is 500kb");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.editedNote.image = e.target.result;
+      };
+      reader.readAsDataURL(fileInput.target.files[0]);
+    }
+  }
+
+  clickFileButton() {
+    const fileInput = document.querySelector('#fileInput');
+    // @ts-ignore
+    fileInput!.click();
+    console.log(fileInput);
   }
 }

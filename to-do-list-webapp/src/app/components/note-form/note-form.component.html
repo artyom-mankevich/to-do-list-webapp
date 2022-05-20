@@ -42,10 +42,10 @@
     </button>
     <input [(ngModel)]="editedNote.tag" value="{{editedNote?.tag}}" class="note-form__input note-form__tag-input" type="text"
            placeholder="add tag" maxlength="30">
-    <button class="note-form__picture-button">
+    <button class="note-form__picture-button" (click)="clickFileButton()">
       <img class="note-form__picture-icon"
            src="assets/picture.svg" alt="Add picture">
     </button>
-    <input class="note-form__file-input" type="file" accept="image/*">
+    <input id="fileInput" (change)="fileInput($event)" class="note-form__file-input" type="file" accept="image/*">
   </section>
 </section>

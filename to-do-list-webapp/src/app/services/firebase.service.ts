@@ -181,13 +181,6 @@ export class FirebaseService {
     if (note.tag !== "") {
       this.setTag(note.tag);
     }
-    if (note.image !== "") {
-      const blobImage = await (await fetch(note.image)).blob();
-      this.base64encodeImage(blobImage).then(base64 => {
-        note.image = base64;
-        this.db.database.ref(`${uid}/notes/${note}/image`).update(note.image);
-      });
-    }
   }
 
   noteOnChildAdded(callback: (note: Note) => void): void {
@@ -251,13 +244,6 @@ export class FirebaseService {
     });
     if (note.tag !== "") {
       this.setTag(note.tag);
-    }
-    if (note.image !== "") {
-      const blobImage = await (await fetch(note.image)).blob();
-      this.base64encodeImage(blobImage).then(base64 => {
-        note.image = base64;
-        this.db.database.ref(`${uid}/notes/${note.key}/image`).update(note.image);
-      });
     }
   }
 
@@ -331,18 +317,5 @@ export class FirebaseService {
   removeNote(key: string): void {
     const uid = this.getUid();
     this.db.database.ref(`${uid}/notes/${key}`).remove();
-  }
-
-  private base64encodeImage(image: Blob): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-      reader.onload = function () {
-        resolve(reader.result);
-      };
-      reader.onerror = function (error) {
-        reject(error);
-      };
-    });
   }
 }
