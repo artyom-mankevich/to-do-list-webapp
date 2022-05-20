@@ -29,73 +29,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [
-              {
-                "input": "src/app/common/js/config.js",
-                "inject": false,
-                "bundleName": "config"
-              },
-              {
-                "input": "src/app/common/js/index.js",
-                "inject": false,
-                "bundleName": "index"
-              },
-              {
-                "input": "src/app/common/js/auth/auth.js",
-                "inject": false,
-                "bundleName": "auth"
-              },
-              {
-                "input": "src/app/common/js/auth/common.js",
-                "inject": false,
-                "bundleName": "common"
-              },
-              {
-                "input": "src/app/common/js/auth/login.js",
-                "inject": false,
-                "bundleName": "login"
-              },
-              {
-                "input": "src/app/common/js/auth/signup.js",
-                "inject": false,
-                "bundleName": "signup"
-              },
-              {
-                "input": "src/app/common/js/auth/validation.js",
-                "inject": false,
-                "bundleName": "validation"
-              },
-              {
-                "input": "src/app/common/js/db/db.js",
-                "inject": false,
-                "bundleName": "db"
-              },
-              {
-                "input": "src/app/common/js/db/entities.js",
-                "inject": false,
-                "bundleName": "entities"
-              },
-              {
-                "input": "src/app/common/js/main/domManipulation.js",
-                "inject": false,
-                "bundleName": "domManipulation"
-              },
-              {
-                "input": "src/app/common/js/main/DOMToDb.js",
-                "inject": false,
-                "bundleName": "DOMToDb"
-              },
-              {
-                "input": "src/app/common/js/main/eventListeners.js",
-                "inject": false,
-                "bundleName": "eventListeners"
-              },
-              {
-                "input": "src/app/common/js/main/main.js",
-                "inject": false,
-                "bundleName": "main"
-              }
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {

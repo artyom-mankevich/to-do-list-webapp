@@ -1,0 +1,47 @@
+<section class="note-form">
+  <section class="note-form__header">
+    <input [(ngModel)]="currentEditedNote.title" [value]="currentEditedNote ? currentEditedNote.title : ''"
+           class="note-form__input note-form__title"
+           type="text"
+           placeholder="Type your title"
+           maxlength="30">
+    <input [(ngModel)]="currentEditedNote.pinned" id="pin" class="note-form__pin-checkbox"
+           type="checkbox" [checked]="currentEditedNote?.pinned">
+    <label class="note-form__pin-icon" for="pin">
+      <img src="assets/pin.svg"
+           alt="Pin button">
+    </label>
+  </section>
+  <section class="note-form__body">
+    <section class="note-form__body">
+      <textarea [(ngModel)]="currentEditedNote.content" *ngIf="currentEditedNote?.type==='note'; else elseBlock" class="note-form__input note-form__body-input"
+                placeholder="Your note ..." maxlength="255"></textarea>
+      <ng-template #elseBlock>
+        <ul class="note-list note-form-list">
+          <li *ngFor="let listItem of currentEditedNote?.listItems; index as i"
+              id="{{listItem.key}}" class="note-list__item">
+            <input [(ngModel)]="currentEditedNote.listItems[i].checked" type="checkbox" class="note-list__checkbox" [checked]="listItem.checked">
+            <input [(ngModel)]="currentEditedNote.listItems[i].body" value="{{listItem.body}}" type="text" class="note-form__input note-list__text" placeholder="new item" maxlength="50">
+          </li>
+        </ul>
+      </ng-template>
+    </section>
+  </section>
+  <section class="form-images-container">
+    <img [(ngModel)]="currentEditedNote.image" class="form-images-container__item" *ngIf="currentEditedNote?.image" src="{{currentEditedNote?.image}}" alt="">
+  </section>
+  <section class="note-form__footer">
+    <button class="note-form__list-button">
+      <img class="note-form__list-icon"
+           src="assets/checked-square.png"
+           alt="List button">
+    </button>
+    <input [(ngModel)]="currentEditedNote.tag" value="{{currentEditedNote?.tag}}" class="note-form__input note-form__tag-input" type="text"
+           placeholder="add tag" maxlength="30">
+    <button class="note-form__picture-button">
+      <img class="note-form__picture-icon"
+           src="assets/picture.svg" alt="Add picture">
+    </button>
+    <input class="note-form__file-input" type="file" accept="image/*">
+  </section>
+</section>

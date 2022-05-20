@@ -8,16 +8,16 @@
   <section class="card-form">
     <div class="card-form__item">
       <label class="card__label" for="emailInput">Email:</label>
-      <input id="emailInput" class="card__input" type="email">
-      <p id="emailError" class="input-error">Email is invalid</p>
+      <input [(ngModel)]="email" id="emailInput" class="card__input" type="email" (input)="validateEmail()">
+      <p id="emailError" class="input-error" [ngClass]="emailValid ? '' : 'input-error_active'">Email is invalid</p>
     </div>
     <div class="card-form__item">
       <label class="card__label" for="password1Input">Password:</label>
-      <input id="password1Input" class="card__input" type="password">
-      <p id="password1Error" class="input-error">Password is too short</p>
+      <input [(ngModel)]="password1" id="password1Input" class="card__input" type="password" (input)="validatePassword1()">
+      <p id="password1Error" class="input-error" [ngClass]="password1Valid ? '' : 'input-error_active'">Password is too short</p>
     </div>
-    <p id="authError" class="input-error">Authentication failed. Please try again.</p>
-    <input class="card__submit" type="submit" value="Log in">
+    <p id="authError" class="input-error" [ngClass]="authSuccess ? '' : 'input-error_active'">Authentication failed. Please try again.</p>
+    <input class="card__submit" type="submit" value="Log in" (click)="submit()">
   </section>
   <div class="card-auth">
     <p class="card-auth__text">Don't have an account?</p>

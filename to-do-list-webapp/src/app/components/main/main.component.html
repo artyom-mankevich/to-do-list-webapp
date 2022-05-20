@@ -1,0 +1,75 @@
+<section class="menu menu_hidden">
+  <section class="categories-menu">
+    <h1 class="menu-title">Categories</h1>
+    <ul class="categories-list">
+      <li class="categories-list__item">Notes</li>
+      <li class="categories-list__item">Reminders</li>
+    </ul>
+  </section>
+  <section class="tags-menu">
+    <h1 class="menu-title">Tags</h1>
+    <ul class="tags-list">
+    </ul>
+  </section>
+</section>
+<main class="main">
+  <section class="notifications notifications_hidden">
+  </section>
+<app-note-form [currentEditedNote]="currentEditedNote" *ngIf="formShown" #noteForm></app-note-form>
+  <section class="side-menu" [ngClass]="formShown ? 'side-menu_darkened' : ''">
+    <section class="side-menu-categories">
+      <button class="side-menu-categories__item side-menu-categories__item_active">
+        <img class="side-menu-categories__icon side-menu-categories__icon_active"
+             src="assets/pencil.svg" alt="Notes icon">
+        Notes
+      </button>
+      <button class="side-menu-categories__item">
+        <img class="side-menu-categories__icon"
+             src="assets/bell.svg" alt="Reminders icon">
+        Reminders
+      </button>
+    </section>
+    <div class="side-menu-tags">
+      <h1 class="side-menu-tags__title">tags:</h1>
+      <section class="tags-buttons">
+        <button *ngFor="let tag of tags" class="tags-buttons__item">
+          <img class="tags-buttons__icon"
+               src="assets/bookmark.png" alt="Tag icon">
+          {{tag}}
+          <button class="tags-buttons__remove-item-button">✖</button>
+        </button>
+      </section>
+    </div>
+  </section>
+  <section class="main-panel" [ngClass]="formShown ? 'main-panel_darkened' : ''">
+    <button class="main-panel__add-button" (click)="formShown=true">
+      <img class="main-panel__add-button-icon"
+           src="assets/plus.svg" alt="Plus icon">
+      Add new note
+    </button>
+    <section class="notes" #notesContainer>
+      <article *ngFor="let note of notes" class="note" id="{{note.key}}">
+        <section class="note__header">
+          <img [ngClass]="note.pinned ? 'note__pin-icon_active' : ''" class="note__pin-icon"
+               src="assets/pin.svg" alt="Pin icon">
+          <h2 class="note__title">{{note.title}}</h2>
+        </section>
+        <div *ngIf="note.type==='note'; else elseBlock">
+          <p class="note__text">{{note.content}}</p>
+        </div>
+        <ng-template #elseBlock>
+          <ul class="note-list">
+            <li *ngFor="let listItem of note.listItems" id="{{listItem.key}}"
+                class="note-list__item">
+              <input type="checkbox" class="note-list__checkbox" disabled=""
+                     [checked]="listItem.checked">
+              <label class="note-list__text">{{listItem.body}}</label>
+            </li>
+          </ul>
+        </ng-template>
+        <img *ngIf="note.image" src="{{note.image}}" class="note__image" alt="">
+        <button class="note__remove-button note__remove-button_hidden">✖</button>
+      </article>
+    </section>
+  </section>
+</main>

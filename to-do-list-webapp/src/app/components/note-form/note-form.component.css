@@ -1,0 +1,159 @@
+.note-form {
+  position: fixed;
+  top: calc(50% - 125px);
+  left: calc(50% - 300px);
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  height: 350px;
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  z-index: 1;
+}
+
+@media screen and (max-width: 800px) {
+  .note-form {
+    width: 100%;
+    top: 10%;
+    left: 0;
+  }
+}
+
+.note-form_hidden {
+  display: none;
+}
+
+.note-form__header {
+  display: flex;
+  width: 100%;
+}
+
+.note-form__input {
+  text-align: center;
+  border: none;
+  width: 100%;
+}
+
+.note-form__input:focus {
+  outline: none;
+}
+
+.note-form__input::placeholder {
+  font-weight: 300;
+}
+
+.note-form__title {
+  height: 1.5em;
+  font-size: 2rem;
+  padding-right: 50px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.note-form__pin-checkbox {
+  display: none;
+}
+
+.note-form__pin-checkbox + .note-form__pin-icon {
+  height: 40px;
+  width: 40px;
+  display: inline-block;
+  padding: 0;
+  opacity: 50%;
+  cursor: pointer;
+  transition: linear 50ms;
+}
+
+.note-form__pin-checkbox:checked + .note-form__pin-icon {
+  opacity: 100%;
+}
+
+.note-form__pin-icon_hidden {
+  display: none;
+}
+
+.note-form__date-input {
+  width: 90%;
+  height: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.note-form__body {
+  flex-grow: 1;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.note-form__body-input {
+  height: 100%;
+  text-align: left;
+  padding: 0;
+  resize: none;
+  font-size: 1.2rem;
+}
+
+.form-images-container {
+  width: 100%;
+  max-height: 100px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.form-images-container__item {
+  max-height: 100px;
+  width: auto;
+}
+
+.note-form__footer {
+  display: flex;
+  padding: 10px 15px 10px 15px;
+  align-items: center;
+  justify-content: center;
+}
+
+.note-form__footer_hidden {
+  display: none;
+}
+
+.note-form__list-button {
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  padding: 0;
+}
+
+.note-form__list-button:hover .note-form__list-icon {
+  filter: var(--main-blue-filter);
+}
+
+.note-form__list-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.note-form__tag-input {
+  font-size: 1.5rem;
+}
+
+.note-form__picture-button {
+  border: none;
+  background-color: white;
+  padding: 0;
+  cursor: pointer;
+}
+
+.note-form__picture-button:hover .note-form__picture-icon {
+  filter: var(--main-blue-filter)
+}
+
+.note-form__picture-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.note-form__file-input {
+  display: none;
+}
