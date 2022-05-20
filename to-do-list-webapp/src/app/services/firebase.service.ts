@@ -3,10 +3,8 @@ import {AngularFireDatabase} from "@angular/fire/compat/database";
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 import {Router} from "@angular/router";
 import {Observable, of} from "rxjs";
-import {onAuthStateChanged} from "@angular/fire/auth";
 import {ListItem, Note, Reminder} from "../common/entities";
-import {query, ref} from "@angular/fire/database";
-import {getBlob} from "@angular/fire/storage";
+import firebase from "firebase/compat";
 
 @Injectable({
   providedIn: 'root'
@@ -195,33 +193,53 @@ export class FirebaseService {
   noteOnChildAdded(callback: (note: Note) => void): void {
     const uid = this.getUid();
     this.db.database.ref(`${uid}/notes`).on('child_added', snapshot => {
-      const listItems: ListItem[] = [];
-      for (const key in snapshot.val().listItems) {
-        listItems.push(
-          new ListItem(
-            key,
-            snapshot.val().listItems[key].body,
-            snapshot.val().listItems[key].checked
-          )
-        );
-      }
-      const note: Note = new Note(
-        snapshot.key,
-        snapshot.val().title,
-        snapshot.val().timestamp,
-        snapshot.val().type,
-        snapshot.val().tag,
-        snapshot.val().pinned,
-        snapshot.val().content,
-        snapshot.val().image,
-        listItems);
+      const note = FirebaseService.noteFromSnapshot(snapshot);
       callback(note);
     });
   }
 
+  noteOnChildRemoved(callback: (note: Note) => void): void {
+    const uid = this.getUid();
+    this.db.database.ref(`${uid}/notes`).on('child_removed', snapshot => {
+      const note = FirebaseService.noteFromSnapshot(snapshot);
+      callback(note);
+    });
+  }
+
+  noteOnChildChanged(callback: (note: Note) => void): void {
+    const uid = this.getUid();
+    this.db.database.ref(`${uid}/notes`).on('child_changed', snapshot => {
+      const note = FirebaseService.noteFromSnapshot(snapshot);
+      callback(note);
+    });
+  }
+
+  private static noteFromSnapshot(snapshot: firebase.database.DataSnapshot) {
+    const listItems: ListItem[] = [];
+    for (const key in snapshot.val().listItems) {
+      listItems.push(
+        new ListItem(
+          key,
+          snapshot.val().listItems[key].body,
+          snapshot.val().listItems[key].checked
+        )
+      );
+    }
+    return new Note(
+      snapshot.key,
+      snapshot.val().title,
+      snapshot.val().timestamp,
+      snapshot.val().type,
+      snapshot.val().tag,
+      snapshot.val().pinned,
+      snapshot.val().content,
+      snapshot.val().image,
+      listItems);
+  }
+
   async updateNote(note: Note): Promise<void> {
     const uid = this.getUid();
-    this.db.database.ref(`${uid}/notes/${note.key}`).update({
+    await this.db.database.ref(`${uid}/notes/${note.key}`).update({
       title: note.title,
       timestamp: Date.now(),
       type: note.type,

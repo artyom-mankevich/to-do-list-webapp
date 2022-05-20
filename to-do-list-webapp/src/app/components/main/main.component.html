@@ -15,7 +15,7 @@
 <main class="main">
   <section class="notifications notifications_hidden">
   </section>
-<app-note-form *ngIf="formShown" #noteForm></app-note-form>
+<app-note-form *ngIf="formShown" [editedNote]="editedNote"></app-note-form>
   <section class="side-menu" [ngClass]="formShown ? 'side-menu_darkened' : ''">
     <section class="side-menu-categories">
       <button class="side-menu-categories__item side-menu-categories__item_active">
@@ -48,10 +48,10 @@
       Add new note
     </button>
     <section class="notes" #notesContainer>
-      <article *ngFor="let note of notes" class="note" id="{{note.key}}">
+      <article *ngFor="let note of notes" class="note" id="{{note.key}}" (click)="editNode($event, note.key)">
         <section class="note__header">
           <img [ngClass]="note.pinned ? 'note__pin-icon_active' : ''" class="note__pin-icon"
-               src="assets/pin.svg" alt="Pin icon" (click)="emitPinChange(note.key)">
+               src="assets/pin.svg" alt="Pin icon" (click)="note.pinned = !note.pinned; updateNotePin(note.key, note.pinned)">
           <h2 class="note__title">{{note.title}}</h2>
         </section>
         <div *ngIf="note.type==='note'; else elseBlock">
@@ -68,7 +68,7 @@
           </ul>
         </ng-template>
         <img *ngIf="note.image" src="{{note.image}}" class="note__image" alt="">
-        <button class="note__remove-button note__remove-button_hidden">✖</button>
+        <button class="note__remove-button note__remove-button_hidden" (click)="removeNote(note.key)">✖</button>
       </article>
     </section>
   </section>

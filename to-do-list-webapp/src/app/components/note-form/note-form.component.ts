@@ -7,8 +7,8 @@ import {ListItem, Note} from "../../common/entities";
   templateUrl: './note-form.component.html',
   styleUrls: ['./note-form.component.css']
 })
-export class NoteFormComponent implements OnInit {
-  @Input() currentEditedNote: Note = new Note(
+export class NoteFormComponent implements OnInit, OnChanges {
+  @Input() editedNote: Note = new Note(
     null,
     "",
     Date.now(),
@@ -21,16 +21,22 @@ export class NoteFormComponent implements OnInit {
   );
 
 
-  constructor(private fbService: FirebaseService) {
+  constructor() {
   }
 
   ngOnInit(): void {
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes["editedNote"].currentValue) {
+      this.editedNote = changes["editedNote"].currentValue;
+    }
+  }
+
   formListButtonClick() {
-    this.currentEditedNote.type = this.currentEditedNote.type == 'list'? 'note' : 'list'
-    if (this.currentEditedNote.type == 'list') {
-      this.currentEditedNote.listItems = [
+    this.editedNote.type = this.editedNote.type == 'list'? 'note' : 'list'
+    if (this.editedNote.type == 'list') {
+      this.editedNote.listItems = [
         new ListItem("0", "", false)
       ];
     }
