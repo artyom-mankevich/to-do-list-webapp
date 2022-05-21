@@ -123,7 +123,7 @@ export class FirebaseService {
     this.db.database.ref(`${uid}/reminders/${key}`).remove();
   }
 
-  onChildAdded(callback: (reminder: Reminder) => void): void {
+  onReminderAdded(callback: (reminder: Reminder) => void): void {
     const uid = this.getUid();
     this.db.database.ref(`${uid}/reminders`).on('child_added', snapshot => {
       const reminder: Reminder = this.reminderFromSnapshot(snapshot);
@@ -131,7 +131,7 @@ export class FirebaseService {
     });
   }
 
-  onChildChanged(callback: (reminder: Reminder) => void): void {
+  onReminderChanged(callback: (reminder: Reminder) => void): void {
     const uid = this.getUid();
     this.db.database.ref(`${uid}/reminders`).on('child_changed', snapshot => {
       const reminder: Reminder = this.reminderFromSnapshot(snapshot);
@@ -139,7 +139,7 @@ export class FirebaseService {
     });
   }
 
-  onChildRemoved(callback: (reminder: Reminder) => void): void {
+  onReminderRemoved(callback: (reminder: Reminder) => void): void {
     const uid = this.getUid();
     this.db.database.ref(`${uid}/reminders`).on('child_removed', snapshot => {
       const reminder: Reminder = this.reminderFromSnapshot(snapshot);
