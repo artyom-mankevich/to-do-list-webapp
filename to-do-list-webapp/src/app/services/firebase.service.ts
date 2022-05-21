@@ -99,7 +99,7 @@ export class FirebaseService {
     return of(reminders);
   }
 
-  addReminder(content: string, eventTimestamp: string): void {
+  addReminder(content: string, eventTimestamp: number): void {
     const uid = this.getUid();
     this.db.database.ref(`${uid}/reminders/`).push({
       content,
