@@ -39,10 +39,6 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.fbService.getUid()) {
-      this.router.navigateByUrl('/login');
-    }
-
     this.fbService.tagOnChildAdded(this.addToTags.bind(this));
     this.fbService.tagOnChildRemoved(this.removeFromTags.bind(this));
 

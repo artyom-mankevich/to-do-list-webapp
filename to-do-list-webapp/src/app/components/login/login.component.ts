@@ -22,10 +22,15 @@ export class LoginComponent implements OnInit {
 
   submit(): void {
     if (this.emailValid && this.password1Valid) {
-      this.fbService.signInWithEmailAndPassword(this.email, this.password1).subscribe(
-        value => this.authSuccess = value
-      );
-      this.router.navigateByUrl('/main');
+      this.fbService.signInWithEmailAndPassword(this.email, this.password1).then((value) => {
+        this.authSuccess = value;
+        if (this.authSuccess) {
+          this.router.navigateByUrl('/main');
+        }
+      }).catch((reason) => {
+        this.authSuccess = false;
+        console.log(reason);
+      });
     }
   }
 

@@ -23,10 +23,15 @@ export class SignupComponent implements OnInit {
 
   submit(): void{
     if (this.password1Valid && this.password2Valid && this.emailValid) {
-      this.fbService.createUserWithEmailAndPassword(this.email, this.password1).subscribe(value => {
+      this.fbService.createUserWithEmailAndPassword(this.email, this.password1).then(value => {
         this.signupSuccessful = value;
+        if (this.signupSuccessful) {
+          this.router.navigateByUrl('/main');
+        }
+      }).catch(reason => {
+        this.signupSuccessful = false;
+        console.log(reason);
       });
-      this.router.navigateByUrl('/main');
     }
   }
 

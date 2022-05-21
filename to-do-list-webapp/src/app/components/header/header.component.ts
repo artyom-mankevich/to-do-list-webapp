@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {FirebaseService} from "../../services/firebase.service";
 
 @Component({
   selector: 'app-header',
@@ -6,10 +7,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  authenticated: boolean | null = false;
 
-  constructor() { }
+  constructor(private fbService: FirebaseService) { }
 
   ngOnInit(): void {
+    this.fbService.authenticated.subscribe(value => {
+      this.authenticated = value;
+    });
   }
 
+  logout() {
+    this.fbService.signOut();
+  }
 }

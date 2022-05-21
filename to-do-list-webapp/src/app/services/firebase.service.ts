@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {AngularFireDatabase} from "@angular/fire/compat/database";
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 import {Router} from "@angular/router";
-import {Observable, of} from "rxjs";
+import {BehaviorSubject, Observable, of} from "rxjs";
 import {ListItem, Note, Reminder} from "../common/entities";
 import firebase from "firebase/compat";
 
@@ -10,13 +10,16 @@ import firebase from "firebase/compat";
   providedIn: 'root'
 })
 export class FirebaseService {
+  public authenticated = new BehaviorSubject<boolean | null>(null);
 
   constructor(private db: AngularFireDatabase, private auth: AngularFireAuth, private router: Router) {
     this.auth.onAuthStateChanged(user => {
       if (user) {
         sessionStorage.setItem('userId', user.uid);
+        this.authenticated.next(true);
       } else {
         sessionStorage.removeItem('userId');
+        this.authenticated.next(false);
       }
     });
   }
@@ -25,31 +28,37 @@ export class FirebaseService {
     return sessionStorage.getItem('userId');
   }
 
-  createUserWithEmailAndPassword(email: string, password: string): Observable<boolean> {
-    this.auth.createUserWithEmailAndPassword(email, password).then(
-      value => {
-        const uid = value!.user!.uid;
-        if (uid) {
-          sessionStorage.setItem('userId', uid);
-          return of(true);
+  createUserWithEmailAndPassword(email: string, password: string): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      this.auth.createUserWithEmailAndPassword(email, password).then(
+        value => {
+          const uid = value!.user!.uid;
+          if (uid) {
+            sessionStorage.setItem('userId', uid);
+            resolve(true);
+          }
+          resolve(false);
         }
-        return of(false);
-      }
-    );
-    return of(false);
+      ).catch(error => {
+        reject(error);
+      });
+    });
   }
 
-  signInWithEmailAndPassword(email: string, password: string): Observable<boolean> {
-    this.auth.signInWithEmailAndPassword(email, password).then(value => {
-        const uid = value!.user!.uid;
-        if (uid) {
-          sessionStorage.setItem('userId', uid);
-          return of(true);
+  signInWithEmailAndPassword(email: string, password: string): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      this.auth.signInWithEmailAndPassword(email, password).then(value => {
+          const uid = value!.user!.uid;
+          if (uid) {
+            sessionStorage.setItem('userId', uid);
+            resolve(true);
+          }
+          resolve(false);
         }
-        return of(false);
-      }
-    );
-    return of(false);
+      ).catch(error => {
+        reject(error);
+      });
+    });
   }
 
   signOut() {
