@@ -77,7 +77,7 @@ export class FirebaseService {
       .get()
       .then(snapshot => {
         snapshot.forEach(childSnapshot => {
-          const reminder: Reminder = childSnapshot.val();
+          const reminder: Reminder = this.reminderFromSnapshot(childSnapshot);
           reminders.push(reminder);
         });
       });
@@ -92,7 +92,7 @@ export class FirebaseService {
       .get()
       .then(snapshot => {
         snapshot.forEach(childSnapshot => {
-          const reminder: Reminder = childSnapshot.val();
+          const reminder: Reminder = this.reminderFromSnapshot(childSnapshot);
           reminders.push(reminder);
         });
       });
@@ -103,7 +103,8 @@ export class FirebaseService {
     const uid = this.getUid();
     this.db.database.ref(`${uid}/reminders/`).push({
       content,
-      eventTimestamp
+      eventTimestamp,
+      timestamp: Date.now()
     });
   }
 
@@ -122,14 +123,47 @@ export class FirebaseService {
     this.db.database.ref(`${uid}/reminders/${key}`).remove();
   }
 
+  onChildAdded(callback: (reminder: Reminder) => void): void {
+    const uid = this.getUid();
+    this.db.database.ref(`${uid}/reminders`).on('child_added', snapshot => {
+      const reminder: Reminder = this.reminderFromSnapshot(snapshot);
+      callback(reminder);
+    });
+  }
+
+  onChildChanged(callback: (reminder: Reminder) => void): void {
+    const uid = this.getUid();
+    this.db.database.ref(`${uid}/reminders`).on('child_changed', snapshot => {
+      const reminder: Reminder = this.reminderFromSnapshot(snapshot);
+      callback(reminder);
+    });
+  }
+
+  onChildRemoved(callback: (reminder: Reminder) => void): void {
+    const uid = this.getUid();
+    this.db.database.ref(`${uid}/reminders`).on('child_removed', snapshot => {
+      const reminder: Reminder = this.reminderFromSnapshot(snapshot);
+      callback(reminder);
+    });
+  }
+
   async getReminderByKey(key: string): Promise<Observable<Reminder>> {
     const uid = this.getUid();
     await this.db.database.ref(`${uid}/reminders/${key}`)
       .once('value').then(snapshot => {
-        const reminder: Reminder = snapshot.val();
+        const reminder: Reminder = this.reminderFromSnapshot(snapshot);
         return of(reminder);
       });
     throw new Error('Reminder not found');
+  }
+
+  reminderFromSnapshot(snapshot: firebase.database.DataSnapshot): Reminder {
+    return new Reminder(
+      snapshot.key,
+      snapshot.val().content,
+      snapshot.val().eventTimestamp,
+      snapshot.val().timestamp
+    );
   }
 
   tagOnChildAdded(callback: (tag: string) => void): void {

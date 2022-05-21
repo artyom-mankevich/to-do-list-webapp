@@ -42,12 +42,12 @@ export class Note extends AbstractNote {
 }
 
 export class Reminder {
-  key: string;
+  key: string | null;
   content: string;
   eventTimestamp: number;
   timestamp: number;
 
-  constructor(key: string, content: string, eventTimestamp: number, timestamp: number) {
+  constructor(key: string | null, content: string, eventTimestamp: number, timestamp: number) {
     this.key = key;
     this.content = content;
     this.eventTimestamp = eventTimestamp;
