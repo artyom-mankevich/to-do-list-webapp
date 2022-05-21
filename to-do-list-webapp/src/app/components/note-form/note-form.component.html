@@ -1,0 +1,42 @@
+<section class="note-form">
+  <section class="note-form__header">
+    <input [(ngModel)]="editedNote.title" [value]="editedNote ? editedNote.title : ''"
+           class="note-form__input note-form__title"
+           type="text"
+           placeholder="Type your title"
+           maxlength="30">
+  </section>
+  <section class="note-form__body">
+    <section class="note-form__body">
+      <textarea [(ngModel)]="editedNote.content" *ngIf="editedNote?.type==='note'; else elseBlock" class="note-form__input note-form__body-input"
+                placeholder="Your note ..." maxlength="255"></textarea>
+      <ng-template #elseBlock>
+        <ul class="note-list note-form-list">
+          <li *ngFor="let listItem of editedNote?.listItems; index as i"
+              id="{{listItem.key}}" class="note-list__item">
+            <input [(ngModel)]="editedNote.listItems[i].checked" type="checkbox" class="note-list__checkbox" [checked]="listItem.checked">
+            <input (keyup)="listItemKeyUp($event, i)" [(ngModel)]="editedNote.listItems[i].body" value="{{listItem.body}}" type="text" class="note-form__input note-list__text" placeholder="new item" maxlength="50">
+          </li>
+        </ul>
+      </ng-template>
+    </section>
+  </section>
+  <section class="form-images-container">
+    <img (click)="removeFormImage()" class="form-images-container__item" src="{{editedNote.image}}" alt="">
+  </section>
+  <section class="note-form__footer">
+    <button class="note-form__list-button" (click)="formListButtonClick()">
+      <img class="note-form__list-icon"
+           src="assets/checked-square.png"
+           alt="List button">
+    </button>
+    <input [(ngModel)]="editedNote.tag" value="{{editedNote?.tag}}" class="note-form__input note-form__tag-input" type="text"
+           placeholder="add tag" maxlength="30">
+    <button class="note-form__picture-button" (click)="clickFileButton()">
+      <img class="note-form__picture-icon"
+           src="assets/picture.svg" alt="Add picture">
+    </button>
+    <input id="fileInput" (change)="fileInput($event)" class="note-form__file-input" type="file" accept="image/*">
+  </section>
+  <button (click)="closeForm()">Close</button>
+</section>

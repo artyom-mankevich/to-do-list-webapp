@@ -1,0 +1,58 @@
+<section class="menu menu_hidden">
+  <section class="categories-menu">
+    <h1 class="menu-title">Categories</h1>
+    <ul class="categories-list">
+      <li class="categories-list__item">Notes</li>
+      <li class="categories-list__item">Reminders</li>
+    </ul>
+  </section>
+  <section class="tags-menu">
+    <h1 class="menu-title">Tags</h1>
+    <ul class="tags-list">
+    </ul>
+  </section>
+</section>
+<main class="main">
+  <section class="notifications notifications_hidden">
+  </section>
+<app-note-form (closeFormEmitter)="closeFormHandler($event)" *ngIf="formShown && selectedSideMenuOption === SidemenuOptions.Notes" [editedNote]="editedNote"></app-note-form>
+<app-reminder-form (closeFormEmitter)="closeReminderFormHandler($event)" *ngIf="formShown && selectedSideMenuOption === SidemenuOptions.Reminders" [editedReminder]="editedReminder"></app-reminder-form>
+  
+<section class="side-menu" [ngClass]="formShown ? 'side-menu_darkened' : ''">
+    <section class="side-menu-categories">
+      <button class="side-menu-categories__item" [ngClass]="this.selectedSideMenuOption === this.SidemenuOptions.Notes ? 'side-menu-categories__item_active' : ''" (click)="changeSideMenuOption(this.SidemenuOptions.Notes)">
+        <img class="side-menu-categories__icon side-menu-categories__icon_active"
+             src="assets/pencil.svg" alt="Notes icon">
+        Notes
+      </button>
+      <button class="side-menu-categories__item" [ngClass]="this.selectedSideMenuOption === this.SidemenuOptions.Reminders ?   'side-menu-categories__item_active' : '' " (click)="changeSideMenuOption(this.SidemenuOptions.Reminders)">
+        <img class="side-menu-categories__icon"
+             src="assets/bell.svg" alt="Reminders icon">
+        Reminders
+      </button>
+    </section>
+    <div *ngIf='selectedSideMenuOption === SidemenuOptions.Notes' class="side-menu-tags">
+      <h1 class="side-menu-tags__title">tags:</h1>
+      <section class="tags-buttons">
+        <button *ngFor="let tag of tags" [ngClass]="tag == currentTag? 'tags-buttons__item_active' : ''" class="tags-buttons__item" (click)="clickTag($event, tag)">
+          <img [ngClass]="tag === currentTag? 'tags-buttons__icon_active' : ''" class="tags-buttons__icon"
+               src="assets/bookmark.png" alt="Tag icon">
+          {{tag}}
+          <button class="tags-buttons__remove-item-button" (click)="removeTag(tag)">✖</button>
+        </button>
+      </section>
+    </div>
+  </section>
+  <section class="main-panel" [ngClass]="formShown ? 'main-panel_darkened' : ''">
+    <button class="main-panel__add-button" (click)="formShown=true">
+      <img class="main-panel__add-button-icon"
+           src="assets/plus.svg" alt="Plus icon">
+      Add new note
+    </button>
+    <app-notes-container (editNoteEmitter)="setCurrentNote($event)" *ngIf="selectedSideMenuOption === SidemenuOptions.Notes" [formShown]="this.formShown" [notes]='notes' ></app-notes-container>
+    <app-reminders-container (editReminderEmitter)="setCurrentReminder($event)" *ngIf="selectedSideMenuOption === SidemenuOptions.Reminders" [reminders]='reminders'></app-reminders-container>
+   
+
+  </section>
+
+</main>

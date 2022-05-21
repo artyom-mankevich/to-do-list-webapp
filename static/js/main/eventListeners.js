@@ -26,6 +26,7 @@ import {
     updateNote,
     updateReminder
 } from "./DOMToDb.js";
+import {auth} from "../auth/auth.js";
 
 let editing = false;
 let editedNoteId = 0;
@@ -43,9 +44,19 @@ export function setEventListeners() {
     addNoteFormListeners();
     addNoteFormListButtonListeners();
     addFileInputListener();
+    addLogoutListener();
 
     const pinCheckbox = document.querySelector(".note-form__pin-checkbox");
     pinCheckbox.checked = false;
+}
+
+function addLogoutListener() {
+    const logoutButton = document.querySelector(".header-auth__item");
+    logoutButton.addEventListener("click", function () {
+        auth.signOut();
+        console.log(sessionStorage.getItem("userId"));
+        window.location.replace('../templates/login.html');
+    });
 }
 
 export function addNoteFormListItemListeners(listItem) {

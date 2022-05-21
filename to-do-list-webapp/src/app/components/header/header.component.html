@@ -1,0 +1,40 @@
+<header class="header">
+  <div class="header-logo">
+    <img class="header-logo__icon header-logo__icon_blue" src="assets/check.svg"
+         alt="Logo icon">
+    <a class="header-logo__title" routerLink="">To Do</a>
+  </div>
+  <button *ngIf="authenticated" class="header__notification-button" (click)="showNotifications = !showNotifications">
+    <img class="header__notification-button-icon"
+         src="assets/bell.svg" alt="Notification bell">
+  </button>
+  <section *ngIf="authenticated" class="notifications" [ngClass]="showNotifications? '' : 'notifications_hidden'">
+    <section class="notification" *ngFor="let notification of notifications">
+      <ng-container *ngIf="notification.eventTimestamp < curDate; else elseBlock">
+        <img class="notification__icon"
+             src="assets/cross-calendar.svg"
+             alt="Calendar icon">
+        <p class="notification__text">{{notification.content.slice(0, 15)}} has happened
+          at {{notification.eventTimestamp | dateTransformer}}</p>
+      </ng-container>
+      <ng-template #elseBlock>
+        <img class="notification__icon"
+             src="assets/calendar.svg"
+             alt="Calendar icon">
+        <p class="notification__text">{{notification.content.slice(0, 15)}} happens
+          at {{notification.eventTimestamp | dateTransformer}}</p>
+      </ng-template>
+    </section>
+  </section>
+  <section *ngIf="!authenticated; else elseBlock" class="header-auth">
+    <a class="header-auth__item" routerLink="/login">Log in</a>
+    <a class="header-auth__item" routerLink="/signup">Sign Up</a>
+  </section>
+  <ng-template #elseBlock class="header-auth">
+    <a class="header-auth__item" (click)="logout()">
+      <img class="header-logo__icon" src="assets/logout.svg"
+           alt="Logout icon">
+      Log out
+    </a>
+  </ng-template>
+</header>

@@ -47,7 +47,7 @@
     }
 }
 
-.main-panel__start-link {
+.main-panel__start-button {
     text-decoration: none;
     background-color: #004BBC;
     color: white;
@@ -58,9 +58,11 @@
     font-weight: 600;
     transition: linear 200ms;
     margin-bottom: 10%;
+    border: none;
+    cursor: pointer;
 }
 
-.main-panel__start-link:hover {
+.main-panel__start-button:hover {
     background-color: #005ce4;
 }
 

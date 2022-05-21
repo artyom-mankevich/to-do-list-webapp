@@ -110,3 +110,14 @@
 .card-auth__link:hover {
     color: #005ce4;
 }
+
+.input-error {
+    display: none;
+    color: red;
+    margin: 0;
+    font-size: 1em;
+}
+
+.input-error_active {
+    display: initial;
+}

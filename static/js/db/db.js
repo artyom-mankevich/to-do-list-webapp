@@ -1,8 +1,4 @@
 import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-
-import {
     getDatabase,
     onChildAdded,
     onChildChanged,
@@ -34,41 +30,32 @@ import {
     changeReminderElement
 } from "../main/domManipulation.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDYxCOzTTHcxGcitpvzOKSNYp2W4aqatz0",
-    authDomain: "to-do-app-75e6e.firebaseapp.com",
-    databaseURL: "https://to-do-app-75e6e-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "to-do-app-75e6e",
-    storageBucket: "to-do-app-75e6e.appspot.com",
-    messagingSenderId: "768237899720",
-    appId: "1:768237899720:web:0c6803c823785521147afd"
-};
+import {app} from "../config.js";
 
 const initTime = Date.now();
 
 class MyDatabase {
     constructor() {
-        const app = initializeApp(firebaseConfig);
         this.db = getDatabase(app);
-        onChildAdded(query(ref(this.db, 'notes/'), orderByChild('timestamp'), startAt(initTime)), (snapshot) => {
+        onChildAdded(query(ref(this.db, `${sessionStorage.getItem('userId')}/notes/`), orderByChild('timestamp'), startAt(initTime)), (snapshot) => {
             drawNoteElement(snapshot.key, snapshot.val());
         });
-        onChildChanged(ref(this.db, 'notes/'), (snapshot) => {
+        onChildChanged(ref(this.db, `${sessionStorage.getItem('userId')}/notes/`), (snapshot) => {
             changeNoteElement(snapshot.key, snapshot.val());
         });
-        onChildRemoved(ref(this.db, 'notes/'), (snapshot) => {
+        onChildRemoved(ref(this.db, `${sessionStorage.getItem('userId')}/notes/`), (snapshot) => {
             removeNoteElementById(snapshot.key);
         });
-        onChildAdded(ref(this.db, 'tags/'), (snapshot) => {
+        onChildAdded(ref(this.db, `${sessionStorage.getItem('userId')}/tags/`), (snapshot) => {
             drawTagElement(snapshot.key);
         });
-        onChildAdded(query(ref(this.db, 'reminders/'), orderByChild('timestamp'), startAt(initTime)), (snapshot) => {
+        onChildAdded(query(ref(this.db, `${sessionStorage.getItem('userId')}/reminders/`), orderByChild('timestamp'), startAt(initTime)), (snapshot) => {
             addReminderElement(snapshot.key, snapshot.val());
         });
-        onChildRemoved(ref(this.db, 'reminders/'), (snapshot) => {
+        onChildRemoved(ref(this.db, `${sessionStorage.getItem('userId')}/reminders/`), (snapshot) => {
             removeReminderElement(snapshot.key);
         });
-        onChildChanged(ref(this.db, 'reminders/'), (snapshot) => {
+        onChildChanged(ref(this.db, `${sessionStorage.getItem('userId')}/reminders/`), (snapshot) => {
             changeReminderElement(snapshot.key, snapshot.val());
         });
     }
@@ -76,7 +63,7 @@ class MyDatabase {
     getLastTwoReminders() {
         return new Promise((resolve, reject) => {
             const reminders = [];
-            get(query(ref(this.db, 'reminders/'), orderByChild('eventTimestamp'), limitToFirst(2))).then((snapshot) => {
+            get(query(ref(this.db, `${sessionStorage.getItem('userId')}/reminders/`), orderByChild('eventTimestamp'), limitToFirst(2))).then((snapshot) => {
                 if (snapshot.exists()) {
                     snapshot.forEach((childSnapshot) => {
                         reminders.push(
@@ -99,7 +86,7 @@ class MyDatabase {
     getReminders() {
         return new Promise((resolve, reject) => {
             const reminders = [];
-            get(query(ref(this.db, 'reminders/')), orderByChild('eventTimestamp')).then((snapshot) => {
+            get(query(ref(this.db, `${sessionStorage.getItem('userId')}/reminders/`)), orderByChild('eventTimestamp')).then((snapshot) => {
                 if (snapshot.exists()) {
                     snapshot.forEach((childSnapshot) => {
                         reminders.push(
@@ -120,7 +107,7 @@ class MyDatabase {
     }
 
     addReminder(content, eventTimestamp) {
-        push(ref(this.db, 'reminders/'), {
+        push(ref(this.db, `${sessionStorage.getItem('userId')}/reminders/`), {
             content: content,
             eventTimestamp: eventTimestamp,
             timestamp: Date.now()
@@ -128,7 +115,7 @@ class MyDatabase {
     }
 
     updateReminder(id, content, eventTimestamp) {
-        update(ref(this.db, `reminders/${id}`), {
+        update(ref(this.db, `${sessionStorage.getItem('userId')}/reminders/${id}`), {
             content: content,
             eventTimestamp: eventTimestamp,
             timestamp: Date.now()
@@ -141,7 +128,7 @@ class MyDatabase {
 
     getReminderByKey(key) {
         return new Promise((resolve, reject) => {
-            get(ref(this.db, `reminders/${key}`)).then((snapshot) => {
+            get(ref(this.db, `${sessionStorage.getItem('userId')}/reminders/${key}`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     resolve(
                         new Reminder(
@@ -159,17 +146,17 @@ class MyDatabase {
     }
 
     setTag(tag) {
-        set(ref(this.db, `tags/${tag}`), "");
+        set(ref(this.db, `${sessionStorage.getItem('userId')}/tags/${tag}`), "");
     }
 
     removeTag(tag) {
-        remove(ref(this.db, `tags/${tag}`));
+        remove(ref(this.db, `${sessionStorage.getItem('userId')}/tags/${tag}`));
     }
 
     addNote(title, tag, timestamp, type, pinned, content = null, listItems = [], image = null) {
         let newPostRef = null;
         if (type === 'note') {
-            newPostRef = push(ref(this.db, 'notes/'), {
+            newPostRef = push(ref(this.db, `${sessionStorage.getItem('userId')}/notes/`), {
                 title: title,
                 content: content,
                 timestamp: timestamp,
@@ -178,7 +165,7 @@ class MyDatabase {
                 pinned: pinned,
             });
         } else if (type === 'list') {
-            newPostRef = push(ref(this.db, 'notes/'), {
+            newPostRef = push(ref(this.db, `${sessionStorage.getItem('userId')}/notes/`), {
                 title: title,
                 timestamp: timestamp,
                 type: type,
@@ -193,14 +180,14 @@ class MyDatabase {
         if (image) {
             this.base64encodeImage(image).then(base64 => {
                 image = base64;
-                set(ref(this.db, `notes/${newPostRef.key}/image`), image);
+                set(ref(this.db, `${sessionStorage.getItem('userId')}/notes/${newPostRef.key}/image`), image);
             });
         }
     }
 
     updateNote(key, title, type, timestamp, pinned, tag, content = "", listItems = {}, image = null) {
         if (type === "note") {
-            update(ref(this.db, 'notes/' + key), {
+            update(ref(this.db, `${sessionStorage.getItem('userId')}/notes/` + key), {
                 title: title,
                 content: content,
                 timestamp: timestamp,
@@ -209,7 +196,7 @@ class MyDatabase {
                 pinned: pinned,
             });
         } else if (type === "list") {
-            update(ref(this.db, 'notes/' + key), {
+            update(ref(this.db, `${sessionStorage.getItem('userId')}/notes/` + key), {
                 title: title,
                 timestamp: timestamp,
                 type: type,
@@ -224,13 +211,13 @@ class MyDatabase {
         if (image) {
             this.base64encodeImage(image).then(base64 => {
                 image = base64;
-                set(ref(this.db, `notes/${key}/image`), image);
+                set(ref(this.db, `${sessionStorage.getItem('userId')}/notes/${key}/image`), image);
             });
         }
     }
 
     updateNotePinned(key, pinned) {
-        update(ref(this.db, 'notes/' + key), {
+        update(ref(this.db, `${sessionStorage.getItem('userId')}/notes/` + key), {
             pinned: pinned
         });
     }
@@ -238,7 +225,7 @@ class MyDatabase {
     getNoteByKey(key) {
         const dbRef = ref(this.db);
         return new Promise((resolve, reject) => {
-            get(child(dbRef, `notes/${key}`)).then((snapshot) => {
+            get(child(dbRef, `${sessionStorage.getItem('userId')}/notes/${key}`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     if (snapshot.val().type === 'note') {
                         const note = new Note(
@@ -271,17 +258,17 @@ class MyDatabase {
     }
 
     getNotes() {
-        const notesRef = query(ref(this.db, 'notes/'), orderByChild('pinned'));
+        const notesRef = query(ref(this.db, `${sessionStorage.getItem('userId')}/notes/`), orderByChild('pinned'));
         return this.getNotesPromiseByRef(notesRef);
     }
 
     getNotesByTag(tag) {
-        const notesRef = query(ref(this.db, 'notes/'), orderByChild('tag'), equalTo(tag));
+        const notesRef = query(ref(this.db, `${sessionStorage.getItem('userId')}/notes/`), orderByChild('tag'), equalTo(tag));
         return this.getNotesPromiseByRef(notesRef);
     }
 
     removeNote(key) {
-        remove(ref(this.db, 'notes/' + key));
+        remove(ref(this.db, `${sessionStorage.getItem('userId')}/notes/` + key));
     }
 
     getNotesPromiseByRef(notesRef) {

@@ -1,0 +1,12 @@
+<section class="note-form">
+    <section class="note-form__header">
+        <input [(ngModel)]="editedReminder.content" [value]="editedReminder ? editedReminder.content : ''" class="note-form__input note-form__title" type="text" placeholder="Type your title" maxlength="30">
+        <label class="note-form__pin-icon" for="pin">
+            <img src="assets/pin.svg" alt="Pin button">
+        </label>
+    </section>
+    <section class="note-form__body">
+        <input (change)='updateTimestamp()' [(ngModel)]="date" [value]="editedReminder  ? editedReminder.eventTimestamp : ''" class="note-form__date-input" type="datetime-local">
+    </section>
+    <button (click)="closeForm()">Close</button>
+</section>

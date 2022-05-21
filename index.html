@@ -15,17 +15,13 @@
              alt="Logo icon">
         <a class="header-logo__title" href="">To Do</a>
     </div>
-    <section class="header-auth">
-        <a class="header-auth__item" href="templates/login.html">Log in</a>
-        <a class="header-auth__item" href="templates/signup.html">Sign Up</a>
-    </section>
 </header>
 <main class="main">
     <img class="main__background"
          src="static/img/notes-bg.jpeg" alt="Notepad background">
     <div class="main-panel">
         <h1 class="main-panel__title">Organize your notes here</h1>
-        <a class="main-panel__start-link" href="templates/signup.html">Get started</a>
+        <button class="main-panel__start-button">Get started</button>
     </div>
     <section class="main-notes">
         <article class="note">
@@ -57,5 +53,8 @@
         </article>
     </section>
 </main>
+<script type="module" src="static/js/config.js"></script>
+<script type="module" src="static/js/auth/auth.js"></script>
+<script type="module" src="static/js/index.js"></script>
 </body>
 </html>
