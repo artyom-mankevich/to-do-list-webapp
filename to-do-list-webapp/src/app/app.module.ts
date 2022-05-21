@@ -33,6 +33,7 @@ import { DateTransformerPipe } from './pipes/date-transformer.pipe';
     RemindersContainerComponent,
     NotesContainerComponent,
     ReminderFormComponent,
+    DateTransformerPipe,
     DateTransformerPipe
   ],
   imports: [

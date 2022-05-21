@@ -147,15 +147,6 @@ export class FirebaseService {
     });
   }
 
-  async getReminderByKey(key: string): Promise<Observable<Reminder>> {
-    const uid = this.getUid();
-    await this.db.database.ref(`${uid}/reminders/${key}`)
-      .once('value').then(snapshot => {
-        const reminder: Reminder = this.reminderFromSnapshot(snapshot);
-        return of(reminder);
-      });
-    throw new Error('Reminder not found');
-  }
 
   reminderFromSnapshot(snapshot: firebase.database.DataSnapshot): Reminder {
     return new Reminder(
@@ -343,21 +334,6 @@ export class FirebaseService {
     return of(notes);
   }
 
-  async getNotesByTag(tag: string): Promise<Observable<Note[]>> {
-    const uid = this.getUid();
-    const notes: Note[] = [];
-    await this.db.database.ref(`${uid}/notes/`)
-      .orderByChild('tag')
-      .equalTo(tag)
-      .get()
-      .then(snapshot => {
-        snapshot.forEach(childSnapshot => {
-          const note: Note = childSnapshot.val();
-          notes.push(note);
-        });
-      });
-    return of(notes);
-  }
 
   removeNote(key: string): void {
     const uid = this.getUid();

@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Note, Reminder} from "../../common/entities";
 import {FirebaseService} from "../../services/firebase.service";
-import  {SidemenuOptions} from "../../enums/sidemenu";
+import {SidemenuOptions} from "../../enums/sidemenu";
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
@@ -26,7 +27,7 @@ export class MainComponent implements OnInit {
     "",
     []
   );
-  editedReminder: Reminder = new Reminder('', '',  Date.now(),  Date.now());
+  editedReminder: Reminder = new Reminder('', '', Date.now(), Date.now());
 
   currentTag: string = '';
 
@@ -53,12 +54,12 @@ export class MainComponent implements OnInit {
   }
 
 
-  addToReminders(reminder: Reminder) : void {
+  addToReminders(reminder: Reminder): void {
     this.reminders.push(reminder)
     this.sortReminders();
   }
 
-  removeFromReminders(reminder: Reminder) : void {
+  removeFromReminders(reminder: Reminder): void {
     this.reminders.forEach((item, index) => {
       if (item.key === reminder.key) {
         this.reminders.splice(index, 1);
@@ -67,7 +68,7 @@ export class MainComponent implements OnInit {
     this.sortReminders();
   }
 
-  changeReminder(reminder: Reminder) : void {
+  changeReminder(reminder: Reminder): void {
     this.reminders.forEach((item, index) => {
       if (item.key === reminder.key) {
         this.reminders[index] = reminder;
@@ -76,13 +77,12 @@ export class MainComponent implements OnInit {
     this.sortReminders();
   }
 
-  sortReminders(){
+  sortReminders() {
     this.reminders.sort((a: Reminder, b: Reminder) => {
 
       return a.eventTimestamp - b.eventTimestamp;
     });
   }
-
 
 
   addToTags(tag: string): void {
@@ -124,7 +124,7 @@ export class MainComponent implements OnInit {
     });
   }
 
-  changeSideMenuOption(option: SidemenuOptions){
+  changeSideMenuOption(option: SidemenuOptions) {
     this.selectedSideMenuOption = option;
   }
 
@@ -162,18 +162,21 @@ export class MainComponent implements OnInit {
       this.filterNotesByTag();
     }
   }
+
   setCurrentNote(note: Note) {
     this.editedNote = note;
     this.formShown = true;
 
   }
+
   setCurrentReminder(reminder: Reminder) {
     this.editedReminder = reminder;
     this.formShown = true;
 
   }
-  closeFormHandler(note: Note){
-    if (note.title || note.content || note.listItems || note.image){
+
+  closeFormHandler(note: Note) {
+    if (note.title || note.content || note.listItems.length > 1 || note.image) {
       if (!note.key) {
         this.fbService.addNote(note);
       } else {
@@ -182,7 +185,7 @@ export class MainComponent implements OnInit {
     }
 
     this.formShown = false;
-    this.editedNote =  new Note(
+    this.editedNote = new Note(
       null,
       "",
       Date.now(),
@@ -197,16 +200,15 @@ export class MainComponent implements OnInit {
 
   closeReminderFormHandler(reminder: Reminder) {
     if (reminder.content && reminder.timestamp) {
-      if (!reminder.key){
+      if (!reminder.key) {
         this.fbService.addReminder(reminder.content, reminder.eventTimestamp);
-      }
-      else {
+      } else {
         this.fbService.updateReminder(reminder);
       }
     }
     console.log(reminder)
     this.formShown = false;
-    this.editedReminder = new Reminder('', '',  Date.now(), Date.now());
+    this.editedReminder = new Reminder('', '', Date.now(), Date.now());
 
   }
 
