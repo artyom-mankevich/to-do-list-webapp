@@ -424,7 +424,7 @@
   height: 1em;
 }
 
-.notes {
+/* .notes {
   display: flex;
   justify-content: left;
   flex-wrap: wrap;
@@ -587,7 +587,7 @@
 .note-list__extension {
   width: 20px;
   height: 20px;
-}
+} */
 
 :host {
   display: flex;

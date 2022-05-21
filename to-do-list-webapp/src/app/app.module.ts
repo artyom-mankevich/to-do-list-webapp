@@ -15,6 +15,10 @@ import {AngularFireDatabaseModule} from "@angular/fire/compat/database";
 import {FormsModule} from "@angular/forms";
 import { MainComponent } from './components/main/main.component';
 import { NoteFormComponent } from './components/note-form/note-form.component';
+import { RemindersContainerComponent } from './components/reminders-container/reminders-container.component';
+import { NotesContainerComponent } from './components/notes-container/notes-container.component';
+import { ReminderFormComponent } from './components/reminder-form/reminder-form.component';
+import { DateTransformerPipe } from './pipes/date-transformer.pipe';
 
 
 @NgModule({
@@ -25,7 +29,11 @@ import { NoteFormComponent } from './components/note-form/note-form.component';
     LoginComponent,
     SignupComponent,
     MainComponent,
-    NoteFormComponent
+    NoteFormComponent,
+    RemindersContainerComponent,
+    NotesContainerComponent,
+    ReminderFormComponent,
+    DateTransformerPipe
   ],
   imports: [
     BrowserModule,

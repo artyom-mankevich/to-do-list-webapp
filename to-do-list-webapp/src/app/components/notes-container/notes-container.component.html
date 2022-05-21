@@ -1,0 +1,24 @@
+<section class="notes" #notesContainer>
+    <article *ngFor="let note of notes" class="note" id="{{note.key}} "  (click)="editNote($event, note.key)">
+      <section class="note__header">
+        <img [ngClass]="note.pinned ? 'note__pin-icon_active' : ''" class="note__pin-icon"
+             src="assets/pin.svg" alt="Pin icon"  (click)="note.pinned = !note.pinned; updateNotePin(note.key, note.pinned)">
+        <h2 class="note__title">{{note.title}}</h2>
+      </section>
+      <div *ngIf="note.type==='note'; else elseBlock">
+        <p class="note__text">{{note.content}}</p>
+      </div>
+      <ng-template #elseBlock>
+        <ul class="note-list">
+          <li *ngFor="let listItem of note.listItems" id="{{listItem.key}}"
+              class="note-list__item">
+            <input type="checkbox" class="note-list__checkbox" disabled=""
+                   [checked]="listItem.checked">
+            <label class="note-list__text">{{listItem.body}}</label>
+          </li>
+        </ul>
+      </ng-template>
+      <img *ngIf="note.image" src="{{note.image}}" class="note__image" alt="">
+      <button class="note__remove-button note__remove-button_hidden" (click)="removeNote(note.key)">✖</button>
+    </article>
+  </section>

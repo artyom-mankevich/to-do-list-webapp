@@ -1,5 +1,7 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ListItem, Note} from "../../common/entities";
+import { Output } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-note-form',
@@ -18,6 +20,8 @@ export class NoteFormComponent implements OnInit, OnChanges {
     "",
     [new ListItem("0", "", false)]
   );
+
+  @Output() closeFormEmitter = new EventEmitter<Note>()
 
 
   constructor() {
@@ -72,5 +76,8 @@ export class NoteFormComponent implements OnInit, OnChanges {
 
   removeFormImage() {
     this.editedNote.image = "";
+  }
+  closeForm(){
+    this.closeFormEmitter.emit(this.editedNote);
   }
 }

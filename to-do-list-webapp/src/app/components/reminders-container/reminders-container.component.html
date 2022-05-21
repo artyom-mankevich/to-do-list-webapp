@@ -1,0 +1,9 @@
+<section class="notes">
+    <article *ngFor="let reminder of reminders" class="note reminder"  (click)="editReminder($event, reminder.key)">
+        <section class="note__header">
+            <h2 class="note__title">{{reminder.eventTimestamp | dateTransformer}}</h2>
+        </section>
+        <p class="note__content note__text">{{reminder.content}}</p>
+        <button class="note__remove-button note__remove-button_hidden" (click)="removeReminder(reminder.key)">✖</button>
+    </article>
+</section>

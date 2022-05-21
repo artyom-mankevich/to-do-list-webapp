@@ -1,15 +1,15 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Note, Reminder} from "../../common/entities";
 import {FirebaseService} from "../../services/firebase.service";
-import {Router} from "@angular/router";
-import {NoteFormComponent} from "../note-form/note-form.component";
-
+import  {SidemenuOptions} from "../../enums/sidemenu";
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
 })
 export class MainComponent implements OnInit {
+  selectedSideMenuOption: SidemenuOptions = SidemenuOptions.Notes;
+  SidemenuOptions = SidemenuOptions;
   notifications: Reminder[] = [];
   reminders: Reminder[] = [];
   tags: string[] = [];
@@ -26,15 +26,12 @@ export class MainComponent implements OnInit {
     "",
     []
   );
-  currentTag: string = '';
+  editedReminder: Reminder = new Reminder('', '',  Date.now(),  Date.now());
 
-  @ViewChild(NoteFormComponent) noteFormComponent!: NoteFormComponent;
-  @ViewChild('notesContainer') notesContainer: ElementRef | undefined;
+  currentTag: string = '';
 
   constructor(
     private fbService: FirebaseService,
-    private router: Router,
-    private renderer: Renderer2
   ) {
   }
 
@@ -45,50 +42,48 @@ export class MainComponent implements OnInit {
     this.fbService.noteOnChildAdded(this.addToNotes.bind(this));
     this.fbService.noteOnChildRemoved(this.removeFromNotes.bind(this));
     this.fbService.noteOnChildChanged(this.changeNote.bind(this));
+
+    this.fbService.onReminderAdded(this.addToReminders.bind(this));
+    this.fbService.onReminderRemoved(this.removeFromReminders.bind(this));
+    this.fbService.onReminderChanged(this.changeReminder.bind(this));
+
+    this.fbService.getReminders().then(value => {
+      value.subscribe(rem => this.reminders = rem);
+    })
   }
 
-  ngAfterViewInit(): void {
-    this.renderer.listen('document', 'click', (event) => {
-      this.outsideNoteFormClick(event);
+
+  addToReminders(reminder: Reminder) : void {
+    this.reminders.push(reminder)
+    this.sortReminders();
+  }
+
+  removeFromReminders(reminder: Reminder) : void {
+    this.reminders.forEach((item, index) => {
+      if (item.key === reminder.key) {
+        this.reminders.splice(index, 1);
+      }
+    });
+    this.sortReminders();
+  }
+
+  changeReminder(reminder: Reminder) : void {
+    this.reminders.forEach((item, index) => {
+      if (item.key === reminder.key) {
+        this.reminders[index] = reminder;
+      }
+    });
+    this.sortReminders();
+  }
+
+  sortReminders(){
+    this.reminders.sort((a: Reminder, b: Reminder) => {
+
+      return a.eventTimestamp - b.eventTimestamp;
     });
   }
 
-  private outsideNoteFormClick(event: any) {
-    const noteAddButton = document.querySelector('.main-panel__add-button');
-    const noteForm = document.querySelector('.note-form');
-    const notes = Array.from<Node>(this.notesContainer?.nativeElement.querySelectorAll('.note'));
-    if (this.formShown
-      && !noteForm?.contains(event.target)
-      && !noteAddButton?.contains(event.target)
-      && !notes.some(note => note.contains(event.target))
-    ) {
-      const currentEditedNote = this.noteFormComponent.editedNote;
-      this.formShown = false;
 
-      if (currentEditedNote.title === ''
-        && currentEditedNote.content === ''
-        && currentEditedNote.listItems.length === 0
-        && currentEditedNote.image === '') {
-        return;
-      }
-      if (!currentEditedNote.key) {
-        this.fbService.addNote(currentEditedNote);
-      } else {
-        this.fbService.updateNote(currentEditedNote!);
-      }
-      this.editedNote = new Note(
-        null,
-        "",
-        Date.now(),
-        "note",
-        "",
-        false,
-        "",
-        "",
-        []
-      );
-    }
-  }
 
   addToTags(tag: string): void {
     this.tags.push(tag);
@@ -129,23 +124,8 @@ export class MainComponent implements OnInit {
     });
   }
 
-  updateNotePin(noteKey: string | null, pinned: boolean) {
-    if (noteKey != null) {
-      this.fbService.updateNotePinned(noteKey, pinned);
-      this.sortNotes();
-    }
-  }
-
-  editNode(event: any, key: string | null) {
-    const classList = event.target.classList;
-    if (this.formShown
-      || key == null
-      || classList.contains('note__remove-button')
-      || classList.contains('note__pin-icon')) {
-      return;
-    }
-    this.formShown = true;
-    this.editedNote = this.notes.find(note => note.key === key)!;
+  changeSideMenuOption(option: SidemenuOptions){
+    this.selectedSideMenuOption = option;
   }
 
   removeNote(key: string | null) {
@@ -182,4 +162,52 @@ export class MainComponent implements OnInit {
       this.filterNotesByTag();
     }
   }
+  setCurrentNote(note: Note) {
+    this.editedNote = note;
+    this.formShown = true;
+
+  }
+  setCurrentReminder(reminder: Reminder) {
+    this.editedReminder = reminder;
+    this.formShown = true;
+
+  }
+  closeFormHandler(note: Note){
+    if (note.title || note.content || note.listItems || note.image){
+      if (!note.key) {
+        this.fbService.addNote(note);
+      } else {
+        this.fbService.updateNote(note!);
+      }
+    }
+
+    this.formShown = false;
+    this.editedNote =  new Note(
+      null,
+      "",
+      Date.now(),
+      "note",
+      "",
+      false,
+      "",
+      "",
+      []
+    );
+  }
+
+  closeReminderFormHandler(reminder: Reminder) {
+    if (reminder.content && reminder.timestamp) {
+      if (!reminder.key){
+        this.fbService.addReminder(reminder.content, reminder.eventTimestamp);
+      }
+      else {
+        this.fbService.updateReminder(reminder);
+      }
+    }
+    console.log(reminder)
+    this.formShown = false;
+    this.editedReminder = new Reminder('', '',  Date.now(), Date.now());
+
+  }
+
 }
